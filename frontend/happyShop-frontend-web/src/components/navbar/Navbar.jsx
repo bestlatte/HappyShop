@@ -10,7 +10,7 @@ export default function Navbar({
     const [accountOpen, setAccountOpen] = useState(false);
     const accountRef = useRef(null);
 
-    // ✅ 搜尋
+    // 搜尋
     const [searchOpen, setSearchOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
     const desktopSearchRef = useRef(null);
@@ -47,7 +47,7 @@ export default function Navbar({
         };
     }, []);
 
-    // ✅ 開啟搜尋後自動 focus
+    // 開啟搜尋後自動 focus
     useEffect(() => {
         if (!searchOpen) return;
 
@@ -82,7 +82,7 @@ export default function Navbar({
         </svg>
     );
 
-    // ✅ X SVG
+    // X SVG
     const XIcon = (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +288,7 @@ export default function Navbar({
                 </div>
             </div>
 
-            {/* ✅ 手機：搜尋BAR 第二列（避免跑版） */}
+            {/* 手機：搜尋BAR 第二列（避免跑版） */}
             {searchOpen && (
                 <div className="border-t bg-white md:hidden">
                     <div className="px-4 py-3">
@@ -321,7 +321,7 @@ export default function Navbar({
                                 aria-label="執行搜尋"
                                 onClick={handleSearch}
                             >
-                                {/* 同樣用原本放大鏡 */}
+                                {/* 放大鏡圖*/}
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
                                     <path
                                         fillRule="evenodd"
