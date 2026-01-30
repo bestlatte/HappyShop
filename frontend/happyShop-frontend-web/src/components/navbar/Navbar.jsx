@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export default function Navbar({
-                                   cartCount = 16,
+                                   cartCount = 0,
                                    brandMain = "黑皮電商",
                                    brandSub = "B2C buy",
                                }) {
@@ -10,20 +10,35 @@ export default function Navbar({
     const [accountOpen, setAccountOpen] = useState(false);
     const accountRef = useRef(null);
 
+    // ✅ 搜尋
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [keyword, setKeyword] = useState("");
+    const desktopSearchRef = useRef(null);
+    const mobileSearchRef = useRef(null);
+
     const user = {
-        name: "李軒毅",
-        email: "b409105065@tmu.edu.tw",
-    };
+        name : "李軒毅" ,
+        email : "b409105065@tmu.edu.tw"
+    }
+
+    const navItems = [
+        { label: "全部分類", href: "#" },
+        { label: "主題", href: "#" },
+        { label: "公益關懷", href: "#" },
+    ];
 
     useEffect(() => {
         function onDocClick(e) {
-            if (!accountRef.current) return;
-            if (!accountRef.current.contains(e.target)) setAccountOpen(false);
+            if (accountRef.current && !accountRef.current.contains(e.target)) {
+                setAccountOpen(false);
+            }
         }
         function onEsc(e) {
-            if (e.key === "Escape") setAccountOpen(false);
+            if (e.key === "Escape") {
+                setAccountOpen(false);
+                setSearchOpen(false);
+            }
         }
-
         document.addEventListener("mousedown", onDocClick);
         document.addEventListener("keydown", onEsc);
         return () => {
@@ -32,21 +47,64 @@ export default function Navbar({
         };
     }, []);
 
-    const navItems = [
-        { label: "全部分類", href: "#" },
-        { label: "主題", href: "#" },
-        { label: "公益關懷", href: "#" },
-    ];
+    // ✅ 開啟搜尋後自動 focus
+    useEffect(() => {
+        if (!searchOpen) return;
+
+        requestAnimationFrame(() => {
+            desktopSearchRef.current?.focus();
+            mobileSearchRef.current?.focus();
+        });
+    }, [searchOpen]);
+
+    function handleSearch() {
+        const q = keyword.trim();
+        if (!q) return;
+        console.log("搜尋：", q);
+        // 未來可以用來打API
+        // navigate(`/search?q=${encodeURIComponent(q)}`)
+    }
+
+    // 放大鏡圖
+    const SearchIcon = (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="h-6 w-6 text-gray-800"
+            aria-hidden="true"
+        >
+            <path
+                fillRule="evenodd"
+                d="M10.5 3.75a6.75 6.75 0 104.02 12.17l3.78 3.78a.75.75 0 101.06-1.06l-3.78-3.78A6.75 6.75 0 0010.5 3.75zm-5.25 6.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0z"
+                clipRule="evenodd"
+            />
+        </svg>
+    );
+
+    // ✅ X SVG
+    const XIcon = (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="h-5 w-5 text-gray-700"
+            aria-hidden="true"
+        >
+            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L10.94 12l-5.72 5.72a.75.75 0 101.06 1.06L12 13.06l5.72 5.72a.75.75 0 101.06-1.06L13.06 12l5.72-5.72a.75.75 0 00-1.06-1.06L12 10.94 6.28 5.22z" />
+        </svg>
+    );
 
     return (
         <header className="w-full border-b bg-white">
+            {/* ===== 第一列 Navbar ===== */}
             <div className="flex h-16 w-full items-center justify-between px-6">
-                {/* Left: Brand */}
+                {/* 左側 */}
                 <div className="flex items-center gap-2">
-                    {/* Mobile: Hamburger (left side) */}
+                    {/* Mobile: Hamburger */}
                     <button
                         type="button"
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-gray-100 md:hidden"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-gray-100 md:hidden cursor-pointer"
                         aria-label="選單"
                         aria-expanded={mobileOpen}
                         onClick={() => setMobileOpen((v) => !v)}
@@ -67,14 +125,13 @@ export default function Navbar({
                     </button>
 
                     {/* Brand */}
-                    <a href="#" className="flex items-end gap-2">
+                    <a href="#" className="flex items-end gap-2 whitespace-nowrap">
                         <span className="text-2xl font-black tracking-tight">{brandMain}</span>
                         <span className="mb-0.5 text-xs font-semibold text-gray-600">{brandSub}</span>
                     </a>
                 </div>
 
-
-                {/* Center: Nav (desktop) */}
+                {/* 中間：桌機選單 */}
                 <nav className="hidden items-center gap-8 md:flex">
                     {navItems.map((item) => (
                         <a
@@ -87,79 +144,106 @@ export default function Navbar({
                     ))}
                 </nav>
 
-                {/* 導覽列右側 */}
-                {/* 導覽列右側 */}
+                {/* 右側 */}
                 <div className="flex items-center gap-6">
                     {/* 購物車 */}
                     <button
                         type="button"
-                        className="relative inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-gray-100"
+                        className="relative inline-flex cursor-pointer h-11 w-11 items-center justify-center rounded-full hover:bg-gray-100"
                         aria-label="購物車"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="h-6 w-6 text-gray-800"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-gray-800">
                             <path d="M2.25 3a.75.75 0 000 1.5h1.386l1.2 10.8A3 3 0 007.82 18h9.36a3 3 0 002.985-2.7l.835-7.5A.75.75 0 0020.25 7.5H6.21l-.3-2.7A.75.75 0 005.165 4.5H2.25z" />
                             <path d="M7.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM18 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
                         </svg>
 
                         {cartCount > 0 && (
                             <span className="absolute right-2 top-2 inline-flex min-w-[18px] -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-        {cartCount > 99 ? "99+" : cartCount}
-      </span>
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
                         )}
                     </button>
 
-                    {/* 搜尋 */}
+                    {/* 網頁：搜尋 icon / 搜尋bar（同一列） */}
+                    <div className="hidden md:flex items-center gap-2">
+                        {!searchOpen ? (
+                            <button
+                                type="button"
+                                className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full hover:bg-gray-100"
+                                aria-label="搜尋"
+                                onClick={() => setSearchOpen(true)}
+                            >
+                                {SearchIcon}
+                            </button>
+                        ) : (
+                            <>
+                                <div className="flex h-11 w-[320px] items-center rounded-full bg-gray-100 px-4">
+                                    <input
+                                        ref={desktopSearchRef}
+                                        value={keyword}
+                                        onChange={(e) => setKeyword(e.target.value)}
+                                        placeholder="想找什麼商品？"
+                                        className="w-full bg-transparent text-sm text-gray-900 placeholder:text-gray-400 outline-none"
+                                        onKeyDown={(e)=>e.key === "Enter" && handleSearch()}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
+                                        aria-label="清除"
+                                        onClick={() => {
+                                            if (keyword) setKeyword("");
+                                            else setSearchOpen(false);
+                                        }}
+                                    >
+                                        {XIcon}
+                                    </button>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-black text-white hover:opacity-90 cursor-pointer"
+                                    aria-label="執行搜尋"
+                                    onClick={handleSearch}
+                                >
+                                    {/* 用原本放大鏡，但變白色 */}
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M10.5 3.75a6.75 6.75 0 104.02 12.17l3.78 3.78a.75.75 0 101.06-1.06l-3.78-3.78A6.75 6.75 0 0010.5 3.75zm-5.25 6.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
+                            </>
+                        )}
+                    </div>
+
+                    {/* 手機：只保留搜尋 icon（點了顯示第二列） */}
                     <button
                         type="button"
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-gray-100"
+                        className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full hover:bg-gray-100 md:hidden"
                         aria-label="搜尋"
+                        onClick={() => setSearchOpen((v) => !v)}
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="h-6 w-6 text-gray-800"
-                        >
-                            <path
-                                fillRule="evenodd"
-                                d="M10.5 3.75a6.75 6.75 0 104.02 12.17l3.78 3.78a.75.75 0 101.06-1.06l-3.78-3.78A6.75 6.75 0 0010.5 3.75zm-5.25 6.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0z"
-                                clipRule="evenodd"
-                            />
-                        </svg>
+                        {SearchIcon}
                     </button>
 
-                    {/* 會員（只這個需要 ref） */}
+                    {/* 會員 */}
                     <div className="relative" ref={accountRef}>
                         <button
                             type="button"
-                            className="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-gray-100"
+                            className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full hover:bg-gray-100 active:scale-95"
                             aria-label="會員"
                             aria-expanded={accountOpen}
-                            onClick={() => setAccountOpen((v) => !v)}
+                            onClick={()=>setAccountOpen((v)=>!v)}
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.8}
-                                stroke="currentColor"
-                                className="h-8 w-8 text-gray-800"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-8 w-8 text-gray-800">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
                         </button>
 
                         {accountOpen && (
-                            <div className="absolute right-0 top-[52px] z-50  w-64 rounded-xl  bg-white shadow-lg ring-1 ring-black/5">
+                            <div className="absolute right-0 top-[52px] z-50 w-64 rounded-xl bg-white shadow-lg ring-1 ring-black/5">
                                 <div className="px-4 py-3">
                                     <div className="text-lg font-extrabold text-gray-900">{user.name}</div>
                                     <div className="mt-1 text-sm text-gray-500">{user.email}</div>
@@ -179,7 +263,7 @@ export default function Navbar({
                                             key={item.label}
                                             href={item.href}
                                             className="block px-4 py-2.5 text-[14px] font-medium text-gray-900 hover:bg-gray-50"
-                                            onClick={() => setAccountOpen(false)}
+                                            onClick={()=>setAccountOpen(false)}
                                         >
                                             {item.label}
                                         </a>
@@ -189,7 +273,7 @@ export default function Navbar({
 
                                     <button
                                         type="button"
-                                        className="block w-full px-4 py-2.5 text-left text-[14px] font-medium text-gray-900 hover:bg-gray-50 hover:bg-gray-50"
+                                        className="block w-full px-4 py-2.5 text-left text-[14px] font-medium text-gray-900 hover:bg-gray-50 cursor-pointer"
                                         onClick={() => {
                                             setAccountOpen(false);
                                             console.log("logout");
@@ -200,16 +284,62 @@ export default function Navbar({
                                 </div>
                             </div>
                         )}
-
                     </div>
                 </div>
-
             </div>
 
+            {/* ✅ 手機：搜尋BAR 第二列（避免跑版） */}
+            {searchOpen && (
+                <div className="border-t bg-white md:hidden">
+                    <div className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                            <div className="flex h-11 flex-1 items-center rounded-full bg-gray-100 px-4">
+                                <input
+                                    ref={mobileSearchRef}
+                                    value={keyword}
+                                    onChange={(e) => setKeyword(e.target.value)}
+                                    placeholder="想找什麼商品？"
+                                    className="w-full bg-transparent text-sm text-gray-900 placeholder:text-gray-400 outline-none"
+                                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                                />
+                                <button
+                                    type="button"
+                                    className="ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
+                                    aria-label="清除"
+                                    onClick={() => {
+                                        if (keyword) setKeyword("");
+                                        else setSearchOpen(false);
+                                    }}
+                                >
+                                    {XIcon}
+                                </button>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-black text-white hover:opacity-90 cursor-pointer"
+                                aria-label="執行搜尋"
+                                onClick={handleSearch}
+                            >
+                                {/* 同樣用原本放大鏡 */}
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M10.5 3.75a6.75 6.75 0 104.02 12.17l3.78 3.78a.75.75 0 101.06-1.06l-3.78-3.78A6.75 6.75 0 0010.5 3.75zm-5.25 6.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Mobile menu */}
             {mobileOpen && (
                 <div className="border-t bg-white md:hidden">
                     <div className="mx-auto max-w-6xl px-4 py-3">
-                        <div className="flex flex-col gap-2 md:hidden">
+                        <div className="flex flex-col gap-2">
                             {navItems.map((item) => (
                                 <a
                                     key={item.label}
