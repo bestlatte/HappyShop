@@ -2,6 +2,11 @@
 import { InfoBreadcrumb } from "./product-info/InfoBreadcrumb";
 import { InfoHeader } from "./product-info/InfoHeader";
 import { InfoDescription } from "./product-info/InfoDescription";
+import { InfoBundle } from "./product-info/InfoBundle";
+import { InfoRelated } from "./product-info/InfoRelated";
+import { InfoPromotions } from "./product-info/InfoPromotions";
+import { InfoActionBtn } from "./product-info/InfoActionBtn";
+import { InfoShipping } from "./product-info/InfoShipping";
 
 export const ProductInfo = ({ info }) => {
   return (
@@ -21,20 +26,19 @@ export const ProductInfo = ({ info }) => {
       {/* 3. 描述區 */}
       <InfoDescription description={info.description} warning={info.warning} />
 
-      {/* --- TODO佈局測試 --- */}
-      <div className="p-4 border-2 border-dashed border-blue-300 bg-blue-50 rounded-lg">
-        <h3 className="font-bold text-blue-600 mb-2"></h3>
-        <p className="text-sm text-blue-500 mb-4"></p>
+      <InfoBundle bundles={info.bundles} />
 
-        {/* 1000px 高 */}
-        <div className="h-[1000px] bg-gradient-to-b from-blue-100 to-white flex items-center justify-center text-gray-300">
-          1000px
-        </div>
-      </div>
-      {/* --- 測試last --- */}
+      {/* 1. 相關商品 */}
+      <InfoRelated relatedProducts={info.relatedProducts} />
 
-      {/* TODO待完成 */}
-      <div className="mt-4 bg-gray-50 p-4">(組合商品)</div>
+      {/* 2. 優惠區 */}
+      <InfoPromotions promotions={info.promotions} />
+
+      {/* 加入購物車btn */}
+      <InfoActionBtn productId={info.id} />
+
+      {/* 運送方式 */}
+      <InfoShipping shippingMethods={info.shippingMethods} />
     </div>
   );
 };
