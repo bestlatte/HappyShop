@@ -1,4 +1,4 @@
-// src/features/products/data/productMockData.js
+// src/features/products/data/productMockData.js.
 const getRandomImage = (index) =>
   new URL(`../../../assets/product1-${index}.jpg`, import.meta.url).href;
 
