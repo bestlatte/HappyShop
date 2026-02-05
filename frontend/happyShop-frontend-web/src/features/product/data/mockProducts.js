@@ -1,0 +1,44 @@
+
+
+export const mockProducts = [
+    {
+        id: "p1",
+        title: "C2C 淨顏嫩嫩組",
+        imageUrl: "/products/p1.jpg",
+        price: 3580,
+        salePrice: 2580,
+        promoTop: "01.31-02.05 00:00-23:59",
+        promoTag: "淨顏嫩嫩組",
+        cardBg: "bg-[#CFC3B6]",
+        mediaBg: "bg-white",
+    },
+    {
+        id: "p2",
+        title: "愛康 超引力涼感棉系列・任選48包組",
+        imageUrl: "/products/p1.jpg",
+        price: 2832,
+        salePrice: 2019,
+        promoTop: "01.30 12:00 - 02.05 23:59",
+        promoTag: "愛康 超引力涼感棉系列・任選48包組",
+        cardBg: "bg-[#58557B]",
+        mediaBg: "bg-[#DADADA]",
+    },
+    {
+        id: "p3",
+        title: "【限購】FAT BEE 蘋安新春禮盒・附提袋",
+        imageUrl: "/products/p1.jpg",
+        price: 888,
+        badge: "限購",
+        cardBg: "bg-transparent",
+        mediaBg: "bg-transparent",
+    },
+    {
+        id: "p4",
+        title: "綵金殿 財源滾滾元寶擺件系列",
+        imageUrl: "/products/p1.jpg",
+        price: 380,
+        cardBg: "bg-transparent",
+        mediaBg: "bg-transparent",
+        hasCarouselArrow: true,
+    },
+];

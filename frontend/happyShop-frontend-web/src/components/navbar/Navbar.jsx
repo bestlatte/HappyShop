@@ -31,6 +31,7 @@ export default function Navbar({
         function onDocClick(e) {
             if (accountRef.current && !accountRef.current.contains(e.target)) {
                 setAccountOpen(false);
+
             }
         }
         function onEsc(e) {
@@ -113,7 +114,7 @@ export default function Navbar({
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            className="h-6 w-6 text-gray-800"
+                            className="h-7 w-7 text-gray-800"
                             aria-hidden="true"
                         >
                             <path
@@ -131,7 +132,7 @@ export default function Navbar({
                     </a>
                 </div>
 
-                {/* 中間：桌機選單 */}
+                {/* 中間：網頁選單 */}
                 <nav className="hidden items-center gap-8 md:flex">
                     {navItems.map((item) => (
                         <a
@@ -160,7 +161,7 @@ export default function Navbar({
                         {cartCount > 0 && (
                             <span className="absolute right-2 top-2 inline-flex min-w-[18px] -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
                 {cartCount > 99 ? "99+" : cartCount}
-              </span>
+                            </span>
                         )}
                     </button>
 
