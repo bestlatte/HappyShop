@@ -8,7 +8,7 @@ export default function ProductCard({ p }) {
                 className={[
                     "relative overflow-hidden rounded-2xl",
                     "aspect-[3/4]",
-                    p.cardBg || "bg-white",
+                    // p.cardBg || "bg-white",
                 ].join(" ")}
             >
                 {/*/!* 促銷時間/標籤（前兩張才有） *!/*/}
@@ -43,7 +43,7 @@ export default function ProductCard({ p }) {
                     {/*    ].join(" ")}*/}
                     {/*>*/}
                         <img
-                            src={p.imageUrl}
+                            src={p.imageKey}
                             // alt={p.title}
                             className={[
                                 "h-full w-full",

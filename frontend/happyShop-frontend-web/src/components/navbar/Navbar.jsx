@@ -4,8 +4,9 @@ export default function Navbar({user=false,
                                    cartCount = 0,
                                    brandMain = "黑皮電商",
                                    brandSub = "B2C buy",
+                                   onHamburgerClick,
                                }) {
-    const [mobileOpen, setMobileOpen] = useState(false);
+    // const [mobileOpen, setMobileOpen] = useState(false);
 
     const [accountOpen, setAccountOpen] = useState(false);
     const accountRef = useRef(null);
@@ -24,7 +25,11 @@ export default function Navbar({user=false,
         { label: "公益關懷", href: "#" },
     ];
 
+
+
     useEffect(() => {
+        {/* current是指說 我當前的這個dom是否存在 也就是說渲染之後 確定會員下拉式選單有存在
+        接下去做e.target的判斷 如果沒有點擊下拉選單 則下拉選單收起來  */}
         function onDocClick(e) {
             if (accountRef.current && !accountRef.current.contains(e.target)) {
                 setAccountOpen(false);
@@ -39,6 +44,8 @@ export default function Navbar({user=false,
         }
         document.addEventListener("mousedown", onDocClick);
         document.addEventListener("keydown", onEsc);
+        {/*useEffect 裡面的return 會在以下情況下被觸發 關掉頁面  同一個useeffect被重新呼叫*/ }
+
         return () => {
             document.removeEventListener("mousedown", onDocClick);
             document.removeEventListener("keydown", onEsc);
@@ -47,6 +54,7 @@ export default function Navbar({user=false,
 
     // 開啟搜尋後自動 focus
     useEffect(() => {
+        //searchOpen = false 時也會嘗試 .focus()  所以做了防呆測試 searchOpen如果是flase 回傳
         if (!searchOpen) return;
 
         requestAnimationFrame(() => {
@@ -170,7 +178,7 @@ export default function Navbar({user=false,
     );
 
     return (
-        <header className="w-full border-b bg-white">
+        <header className="sticky top-0 z-50 w-full h-16 border-b border-black/10 bg-white relative">
             {/* ===== 第一列 Navbar ===== */}
             <div className="flex h-16 w-full items-center justify-between px-6">
                 {/* 左側 */}
@@ -180,8 +188,9 @@ export default function Navbar({user=false,
                         type="button"
                         className="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-gray-100 md:hidden cursor-pointer"
                         aria-label="選單"
-                        aria-expanded={mobileOpen}
-                        onClick={() => setMobileOpen((v) => !v)}
+                        // aria-expanded={undefined}
+                        // onClick={() => setMobileOpen((v) => !v)}
+                        onClick={() => onHamburgerClick?.()}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -206,7 +215,7 @@ export default function Navbar({user=false,
                 </div>
 
                 {/* 中間：網頁選單 */}
-                <nav className="hidden items-center gap-8 md:flex">
+                <nav className="absolute left-1/2 -translate-x-1/2 flex gap-6 hidden items-center gap-8 md:flex">
                     {navItems.map((item) => (
                         <a
                             key={item.label}
@@ -303,13 +312,13 @@ export default function Navbar({user=false,
                     </button>
 
                     {/* 會員 : 如果有user登入就切換成user頁面 */}
-                    {user?<AuthMenu />:<GuestMenu/>}
+                    {user?<AuthMenu user={user} />:<GuestMenu/>}
                 </div>
             </div>
 
             {/* 手機：搜尋BAR 第二列（避免跑版） */}
             {searchOpen && (
-                <div className="border-t bg-white md:hidden">
+                <div className="absolute left-0 right-0 top-full border-t bg-white md:hidden shadow-sm">
                     <div className="px-4 py-3">
                         <div className="flex items-center gap-2">
                             <div className="flex h-11 flex-1 items-center rounded-full bg-gray-100 px-4">
@@ -354,25 +363,25 @@ export default function Navbar({user=false,
                 </div>
             )}
 
-            {/* Mobile menu */}
-            {mobileOpen && (
-                <div className="border-t bg-white md:hidden">
-                    <div className="mx-auto max-w-6xl px-4 py-3">
-                        <div className="flex flex-col gap-2">
-                            {navItems.map((item) => (
-                                <a
-                                    key={item.label}
-                                    href={item.href}
-                                    className="rounded-lg px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100"
-                                    onClick={() => setMobileOpen(false)}
-                                >
-                                    {item.label}
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
+             {/*Mobile menu*/}
+            {/*{mobileOpen && (*/}
+            {/*    <div className="absolute left-0 right-0 top-full border-t bg-white md:hidden shadow-sm">*/}
+            {/*        <div className="mx-auto max-w-6xl px-4 py-3">*/}
+            {/*            <div className="flex flex-col gap-2">*/}
+            {/*                {navItems.map((item) => (*/}
+            {/*                    <a*/}
+            {/*                        key={item.label}*/}
+            {/*                        href={item.href}*/}
+            {/*                        className="rounded-lg px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100"*/}
+            {/*                        onClick={() => setMobileOpen(false)}*/}
+            {/*                    >*/}
+            {/*                        {item.label}*/}
+            {/*                    </a>*/}
+            {/*                ))}*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*)}*/}
         </header>
     );
 }

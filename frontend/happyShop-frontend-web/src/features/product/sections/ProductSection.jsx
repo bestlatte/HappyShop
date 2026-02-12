@@ -1,10 +1,10 @@
-import ProductGrid from "./ProductGrid";
-import { mockProducts } from "../data/mockProducts";
-import ProductCarousel from "./ProductCarousel.jsx";
+import ProductGrid from "../../productBrowser/components/ProductGrid.jsx";
+import { mockProducts } from "../data/mockProducts.js";
+import ProductCarousel from "../components/ProductCarousel.jsx";
 
 export default function ProductSection({ title = "新品上市", tag = "New" }) {
     return (
-        <section className="mx-auto max-w-5xl px-6 py-10">
+        <section className="mx-auto max-w-5xl px-6 py-10 " >
             {/* 標題 */}
             <div className="flex items-end gap-3">
                 <h2 className="text-2xl font-black tracking-tight text-gray-900">
