@@ -96,7 +96,7 @@ function IconLink({ href = "#", label, children }) {
 }
 
 
-/** 用純 SVG，避免你安裝 lucide/react-icons */
+/** 純 SVG*/
 function LineIcon() {
     return (
         <svg

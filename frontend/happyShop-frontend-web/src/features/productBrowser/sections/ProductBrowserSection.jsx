@@ -7,13 +7,13 @@ import CategorySidebar from "../components/CategorySidebar.jsx";
 function SortBar() {
     return (
         <div className="mb-6 flex items-center justify-end gap-3">
-            <button className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-900">
+            <button className="cursor-pointer rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-900">
                 新至舊 <span className="ml-1">▾</span>
             </button>
-            <button className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-500">
+            <button className="cursor-pointer rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-500">
                 金額範圍
             </button>
-            <button className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-900">
+            <button className="cursor-pointer rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-900">
                 商品標籤 <span className="ml-1">▾</span>
             </button>
         </div>
@@ -22,6 +22,10 @@ function SortBar() {
 
 export default function ProductBrowserSection({ active, setActive }) {
     // const [active, setActive] = useState("new");
+
+    const filterProducts =
+         mockProducts.filter((p)=>p.category === active)
+
 
     return (
         <section className="w-full border-b border-black/10">
@@ -45,14 +49,8 @@ export default function ProductBrowserSection({ active, setActive }) {
                         {/* 右：商品列表 */}
                         <div className="min-w-0">
                             <div className="flex flex-col gap-5">
-                                <ProductGrid products={mockProducts} />
-                                <ProductGrid products={mockProducts} />
-                                <ProductGrid products={mockProducts} />
-                                <ProductGrid products={mockProducts} />
-                                <ProductGrid products={mockProducts} />
-                                <ProductGrid products={mockProducts} />
-                                <ProductGrid products={mockProducts} />
-                                <ProductGrid products={mockProducts} />
+                                <ProductGrid products={filterProducts} />
+
                             </div>
                         </div>
                     </div>

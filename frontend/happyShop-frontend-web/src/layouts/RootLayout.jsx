@@ -5,7 +5,7 @@ import Home from "../features/product/pages/Home.jsx";
 import {useState} from "react";
 import MobileCategoryDrawer from "../components/mobileCategoryDrawer/MobileCategoryDrawer.jsx";
 
-export default function RootLayout() {
+export default function RootLayout( ) {
 
 
 

@@ -11,8 +11,8 @@ export default function App() {
             <Routes>
                 <Route element={<RootLayout />}>
                     {/* 傳入 user 給 Home（若 Home 需要） */}
-                    {/*<Route path="/" element={<Home user={user} />} />*/}
-                    <Route path="/" element={<ProductBrowser  />} />
+                    <Route path="/home" element={<Home user={user} />} />
+                    <Route path="/productBrowser" element={<ProductBrowser  />} />
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import CategorySidebar from "../../features/productBrowser/components/CategorySidebar.jsx";
 
 export default function MobileCategoryDrawer({ open, onClose, active, setActive }) {
-    // 鎖住 body scroll（避免背景跟著滑）
+    // 鎖住 body scroll（避免背景跟著一起滑動）
     useEffect(() => {
         if (!open) return;
         const prev = document.body.style.overflow;
@@ -56,6 +56,7 @@ export default function MobileCategoryDrawer({ open, onClose, active, setActive 
                 </div>
 
                 <div className="p-4">
+
                     <CategorySidebar
                         activeKey={active}
                         onSelect={(k) => {
