@@ -363,25 +363,7 @@ export default function Navbar({user=false,
                 </div>
             )}
 
-             {/*Mobile menu*/}
-            {/*{mobileOpen && (*/}
-            {/*    <div className="absolute left-0 right-0 top-full border-t bg-white md:hidden shadow-sm">*/}
-            {/*        <div className="mx-auto max-w-6xl px-4 py-3">*/}
-            {/*            <div className="flex flex-col gap-2">*/}
-            {/*                {navItems.map((item) => (*/}
-            {/*                    <a*/}
-            {/*                        key={item.label}*/}
-            {/*                        href={item.href}*/}
-            {/*                        className="rounded-lg px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100"*/}
-            {/*                        onClick={() => setMobileOpen(false)}*/}
-            {/*                    >*/}
-            {/*                        {item.label}*/}
-            {/*                    </a>*/}
-            {/*                ))}*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*)}*/}
+
         </header>
     );
 }

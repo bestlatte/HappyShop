@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import { useOutletContext, useSearchParams } from "react-router-dom";
 import ProductBrowserSection from "../sections/ProductBrowserSection.jsx";
+import {defaultDatas} from "../data/defaultDatas.js";
+
 
 
 
@@ -22,12 +24,15 @@ active 變成 "tense"
 
 export default function ProductBrowser() {
     const { active, setActive } = useOutletContext();
+    // const [navKey, setNavKey] = useState("topic");
     const [searchParams] = useSearchParams();
+
+    // const items = defaultDatas[navKey]??[];
 
     useEffect(() => {
         const category = searchParams.get("category"); // "new" / "tense" ...
         if (category) setActive(category);
     }, [searchParams, setActive]);
 
-    return <ProductBrowserSection active={active} setActive={setActive} />;
+    return <ProductBrowserSection   items={defaultDatas}  active={active} setActive={setActive} />;
 }

@@ -1,7 +1,18 @@
 import { useEffect } from "react";
 import CategorySidebar from "../../features/productBrowser/components/CategorySidebar.jsx";
+import {useLocation, useNavigate} from "react-router-dom";
+import {defaultDatas} from "../../features/productBrowser/data/defaultDatas.js";
 
 export default function MobileCategoryDrawer({ open, onClose, active, setActive }) {
+
+    //導航到其他頁面
+    const navigate = useNavigate();
+
+    //判斷現在在哪個頁面。
+    const location = useLocation();
+
+
+
     // 鎖住 body scroll（避免背景跟著一起滑動）
     useEffect(() => {
         if (!open) return;
@@ -17,6 +28,26 @@ export default function MobileCategoryDrawer({ open, onClose, active, setActive 
         document.addEventListener("keydown", onEsc);
         return () => document.removeEventListener("keydown", onEsc);
     }, [open, onClose]);
+
+
+
+    const handleSelect=(k)=>{
+        setActive(k);
+        onClose();
+        if(location.pathname !== "/productBrowser"){
+            navigate(`/productBrowser?category=${k}`);}
+        else{
+            navigate(`?category=${k}`, { replace: true });
+        }
+        }
+
+
+
+
+
+
+
+
 
     return (
         <div
@@ -58,11 +89,9 @@ export default function MobileCategoryDrawer({ open, onClose, active, setActive 
                 <div className="p-4">
 
                     <CategorySidebar
+                        items={defaultDatas}
                         activeKey={active}
-                        onSelect={(k) => {
-                            setActive(k);
-                            onClose();
-                        }}
+                        onSelect={handleSelect}
                     />
                 </div>
             </aside>

@@ -9,9 +9,10 @@ export default function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route element={<RootLayout />}>
+                <Route path="/" element={<RootLayout />}>
                     {/* 傳入 user 給 Home（若 Home 需要） */}
-                    <Route path="/home" element={<Home user={user} />} />
+                    {/*<Route index element={<Navigate to="/home" replace />} />*/}
+                    <Route index element={<Home user={user} />} />
                     <Route path="/productBrowser" element={<ProductBrowser  />} />
                 </Route>
             </Routes>

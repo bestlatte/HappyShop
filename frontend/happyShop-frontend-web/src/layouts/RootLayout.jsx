@@ -24,7 +24,8 @@ export default function RootLayout( ) {
         <>
             <div className="sticky top-0 z-50 bg-white">
 
-                <Navbar  onHamburgerClick={()=>setMobileCategoryOpen(true)}  user={user}  cartCount={15} />
+                <Navbar
+                        onHamburgerClick={()=>setMobileCategoryOpen(true)}  user={user}  cartCount={15} />
             </div>
 
             <MobileCategoryDrawer

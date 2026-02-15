@@ -20,8 +20,7 @@ function SortBar() {
     );
 }
 
-export default function ProductBrowserSection({ active, setActive }) {
-    // const [active, setActive] = useState("new");
+export default function ProductBrowserSection({items , active, setActive }) {
 
     const filterProducts =
          mockProducts.filter((p)=>p.category === active)
@@ -43,7 +42,7 @@ export default function ProductBrowserSection({ active, setActive }) {
                     <div className="grid  grid-cols-1 md:grid-cols-[240px_minmax(0,1fr)] gap-14">
                         {/* 左：Sidebar */}
                         <div className="hidden md:block sticky top-[200px] left-[50px] h-fit">
-                            <CategorySidebar activeKey={active} onSelect={setActive} />
+                            <CategorySidebar items={items} activeKey={active} onSelect={setActive} />
                         </div>
 
                         {/* 右：商品列表 */}
