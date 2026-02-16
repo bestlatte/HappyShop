@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RootLayout from "../layouts/RootLayout";
 import Home from "../features/product/pages/Home.jsx";
 import ProductBrowser from "../features/productBrowser/pages/ProductBrowser.jsx";
+import Login from "../features/auth/pages/Login.jsx";
 
 export default function App() {
     const user = null; // 如果要給 Home，也可在此處建立 user
@@ -14,6 +15,7 @@ export default function App() {
                     {/*<Route index element={<Navigate to="/home" replace />} />*/}
                     <Route index element={<Home user={user} />} />
                     <Route path="/productBrowser" element={<ProductBrowser  />} />
+                    <Route path="/login" element={<Login  />} />
                 </Route>
             </Routes>
         </BrowserRouter>

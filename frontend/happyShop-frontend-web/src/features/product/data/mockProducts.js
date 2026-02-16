@@ -1,4 +1,5 @@
 import p1 from "../../../assets/p1.jpg";
+import p2 from "../../../assets/origin.jpg";
 
 export const mockProducts = [
     {
@@ -17,7 +18,7 @@ export const mockProducts = [
     {
         id: "p2",
         title: "韓國 超引力涼感棉系列・任選48包組",
-        imageKey : p1,
+        imageKey : p2,
         // imageUrl: "/src/assets/products/p1.jpg",
         price: 2832,
         salePrice: 2019,
@@ -136,4 +137,18 @@ export const mockProducts = [
         // cardBg: "bg-[#CFC3B6]",
         // mediaBg: "bg-black",
     },
+    {
+        id: "p12",
+        title: "超好吃的食物",
+        imageKey : p1,
+        // imageUrl: "/products/p1.jpg",
+        price: 3580,
+        salePrice: 2580,
+        promoTop: "01.31-02.05 00:00-23:59",
+        promoTag: "超好吃的食物",
+        category : "food",
+        // cardBg: "bg-[#CFC3B6]",
+        // mediaBg: "bg-black",
+    },
+
 ];

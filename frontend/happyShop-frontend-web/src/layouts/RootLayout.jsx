@@ -16,7 +16,7 @@ export default function RootLayout( ) {
         email : "b409105065@tmu.edu.tw"
     }
 
-    const [active ,setActive] = useState("new");
+
     const [mobileCategoryOpen, setMobileCategoryOpen] = useState(false);
 
 
@@ -24,18 +24,15 @@ export default function RootLayout( ) {
         <>
             <div className="sticky top-0 z-50 bg-white">
 
-                <Navbar
-                        onHamburgerClick={()=>setMobileCategoryOpen(true)}  user={user}  cartCount={15} />
+                <Navbar  onHamburgerClick={()=>setMobileCategoryOpen(true)}  user={user}  cartCount={15} />
             </div>
 
             <MobileCategoryDrawer
                 open={mobileCategoryOpen}
                 onClose={() => setMobileCategoryOpen(false)}
-                active={active}
-                setActive={setActive}
             />
             <main>
-                <Outlet context={{active, setActive}}/> {/* <- 必須有，才能 render Routes 的 child element */}
+                <Outlet />
             </main>
             <Footer/>
         </>

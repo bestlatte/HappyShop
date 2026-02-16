@@ -1,15 +1,27 @@
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import CategorySidebar from "../../features/productBrowser/components/CategorySidebar.jsx";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {defaultDatas} from "../../features/productBrowser/data/defaultDatas.js";
 
-export default function MobileCategoryDrawer({ open, onClose, active, setActive }) {
+export default function MobileCategoryDrawer({ open, onClose, active}) {
 
     //導航到其他頁面
     const navigate = useNavigate();
 
     //判斷現在在哪個頁面。
     const location = useLocation();
+    const [searchParam, setSearchParam] = useSearchParams();
+    const currentNav = searchParam.get("nav")??"all";
+
+
+
+
+
+    const items = defaultDatas[currentNav]??[];
+    // const title =
+    const titleMap = { topic: "主題", all: "分類", charity: "公益關懷" };
+    const title = titleMap[currentNav];
+
 
 
 
@@ -32,14 +44,19 @@ export default function MobileCategoryDrawer({ open, onClose, active, setActive 
 
 
     const handleSelect=(k)=>{
-        setActive(k);
         onClose();
+        const sp = new URLSearchParams(searchParam) ;
+        sp.set("nav",currentNav);
+        sp.set("category",k);
+
         if(location.pathname !== "/productBrowser"){
-            navigate(`/productBrowser?category=${k}`);}
-        else{
-            navigate(`?category=${k}`, { replace: true });
+            navigate(`/productBrowser?${sp.toString()}`);
+        }else{
+            setSearchParam(sp, { replace: true });
         }
+
         }
+
 
 
 
@@ -87,9 +104,55 @@ export default function MobileCategoryDrawer({ open, onClose, active, setActive 
                 </div>
 
                 <div className="p-4">
+                    {/* 三個頁籤按鈕 */}
+                    <div className="mb-4 flex items-center gap-5 border-b border-black/10 pb-3">
+                        {[
+                            { key: "all", label: "全部分類" },
+                            { key: "topic", label: "主題" },
+                            { key: "charity", label: "公益關懷" },
+                        ].map((t) => {
+                            const isOn = currentNav === t.key;
+                            return (
+                                <button
+                                    key={t.key}
+                                    type="button"
+                                    onClick={() => {
+                                        const sp = new URLSearchParams(searchParam);
+                                        sp.set("nav", t.key);
 
+                                        const firstKey = defaultDatas[t.key]?.[0]?.key;
+                                        if (firstKey) sp.set("category", firstKey);
+
+                                        setSearchParam(sp, { replace: true });
+
+                                        onClose?.(); // 可選：點tab就關抽屜，看你要不要
+                                    }}
+                                    className={[
+                                        "text-sm font-semibold cursor-pointer pb-2",
+                                        "hover:text-black hover:border-black",
+                                        isOn
+                                            ? "text-black border-b-2 border-black"
+                                            : "text-gray-600 hover:text-black",
+                                    ].join(" ")}
+
+
+                                    // className={[
+                                    //     "text-sm font-semibold cursor-pointer pb-2",
+                                    //     "border-b-2 border-transparent",          // 平常看起來沒底線
+                                    //     "hover:text-black hover:border-black",    // hover 出底線
+                                    //     isOn ? "text-black border-black" : "text-gray-600", // active 出底線
+                                    // ].join(" ")}
+                                >
+                                    {t.label}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* 你的 Sidebar */}
                     <CategorySidebar
-                        items={defaultDatas}
+                        title={title}
+                        items={items}
                         activeKey={active}
                         onSelect={handleSelect}
                     />

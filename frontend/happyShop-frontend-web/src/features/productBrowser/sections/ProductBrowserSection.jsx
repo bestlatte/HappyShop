@@ -1,8 +1,9 @@
-// features/product/sections/ProductBrowserSection.jsx
-import { useState } from "react";
 import ProductGrid from "../components/ProductGrid.jsx";
 import { mockProducts } from "../../product/data/mockProducts.js";
 import CategorySidebar from "../components/CategorySidebar.jsx";
+import { useSearchParams } from "react-router-dom";
+
+
 
 function SortBar() {
     return (
@@ -20,10 +21,22 @@ function SortBar() {
     );
 }
 
-export default function ProductBrowserSection({items , active, setActive }) {
+export default function ProductBrowserSection({title , items  }) {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const currentNav = searchParams.get("nav") ?? "all";
+    const currentCategory = searchParams.get("category") ?? items[0]?.key ;
+
+
+    const handleSelect = (k) => {
+        const sp = new URLSearchParams(searchParams);
+        sp.set("nav", currentNav);
+        sp.set("category", k);
+        setSearchParams(sp, { replace: true });
+    };
+
 
     const filterProducts =
-         mockProducts.filter((p)=>p.category === active)
+         mockProducts.filter((p)=>p.category === currentCategory);
 
 
     return (
@@ -42,7 +55,7 @@ export default function ProductBrowserSection({items , active, setActive }) {
                     <div className="grid  grid-cols-1 md:grid-cols-[240px_minmax(0,1fr)] gap-14">
                         {/* 左：Sidebar */}
                         <div className="hidden md:block sticky top-[200px] left-[50px] h-fit">
-                            <CategorySidebar items={items} activeKey={active} onSelect={setActive} />
+                            <CategorySidebar title={title}   items={items} activeKey={currentCategory} onSelect={handleSelect} />
                         </div>
 
                         {/* 右：商品列表 */}

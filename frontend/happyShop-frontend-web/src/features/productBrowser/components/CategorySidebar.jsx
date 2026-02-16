@@ -2,7 +2,7 @@
 
 
 export default function CategorySidebar({
-                                            title = "主題",
+                                            title = "",
                                             items=[],
                                             activeKey,
                                             onSelect,
@@ -14,6 +14,8 @@ export default function CategorySidebar({
             {/* 標題 */}
             <div className="mb-6 text-[15px] font-semibold text-gray-900">
                 {title}
+
+
             </div>
 
             {/* 清單 */}

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
+import {defaultDatas} from "../../features/productBrowser/data/defaultDatas.js";
 
 export default function Navbar({user=false,
                                    cartCount = 0,
@@ -10,6 +12,27 @@ export default function Navbar({user=false,
 
     const [accountOpen, setAccountOpen] = useState(false);
     const accountRef = useRef(null);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    //取得當前頁面的網址
+    const [searchParams] = useSearchParams();
+    const navInUrl = searchParams.get("nav");
+    const isOnBrowser = location.pathname === "/productBrowser";
+
+
+    function setNav(nextNav) {
+        const sp = new URLSearchParams(searchParams);
+        sp.set("nav", nextNav);
+
+        const firstKey = defaultDatas[nextNav]?.[0]?.key ?? "new";
+        sp.set("category", firstKey);
+
+        navigate(`/productBrowser?${sp.toString()}`);
+    }
+
+
+
 
     // 搜尋
     const [searchOpen, setSearchOpen] = useState(false);
@@ -18,11 +41,10 @@ export default function Navbar({user=false,
     const mobileSearchRef = useRef(null);
 
 
-
     const navItems = [
-        { label: "全部分類", href: "#" },
-        { label: "主題", href: "#" },
-        { label: "公益關懷", href: "#" },
+        { key: "all", label: "全部分類" },
+        { key: "topic", label: "主題" },
+        { key: "charity", label: "公益關懷" },
     ];
 
 
@@ -208,23 +230,36 @@ export default function Navbar({user=false,
                     </button>
 
                     {/* Brand */}
-                    <a href="#" className="flex items-end gap-2 whitespace-nowrap">
-                        <span className="text-2xl font-black tracking-tight">{brandMain}</span>
+                    <button  className=" cursor-pointer flex items-end gap-2 whitespace-nowrap"
+                             onClick={()=>navigate("/")}>
+                        <span className="text-2xl font-black tracking-tight"
+
+
+                        >{brandMain}</span>
                         <span className="mb-0.5 text-xs font-semibold text-gray-600">{brandSub}</span>
-                    </a>
+                    </button>
                 </div>
 
                 {/* 中間：網頁選單 */}
-                <nav className="absolute left-1/2 -translate-x-1/2 flex gap-6 hidden items-center gap-8 md:flex">
-                    {navItems.map((item) => (
-                        <a
-                            key={item.label}
-                            href={item.href}
-                            className="text-sm font-semibold text-gray-800 hover:text-black"
-                        >
-                            {item.label}
-                        </a>
-                    ))}
+                <nav className="absolute left-1/2 -translate-x-1/2 hidden items-center gap-8 md:flex">
+                    {navItems.map((item) => {
+                        const isActive = isOnBrowser && navInUrl === item.key;
+
+                        return (
+                            <button
+                                type="button"
+                                key={item.key}
+                                onClick={() => setNav(item.key)}
+                                className={
+                                    isActive
+                                        ? "cursor-pointer text-sm font-extrabold text-black underline underline-offset-8"
+                                        : "cursor-pointer text-sm font-semibold text-gray-800 hover:text-black"
+                                }
+                            >
+                                {item.label}
+                            </button>
+                        );
+                    })}
                 </nav>
 
                 {/* 右側 */}
