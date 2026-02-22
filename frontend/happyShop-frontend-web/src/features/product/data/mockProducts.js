@@ -12,6 +12,7 @@ export const mockProducts = [
         promoTop: "01.31-02.05 00:00-23:59",
         promoTag: "淨顏嫩嫩組",
         category : "new",
+        nav : "all"
         // cardBg: "bg-[#CFC3B6]",
         // mediaBg: "bg-black",
     },

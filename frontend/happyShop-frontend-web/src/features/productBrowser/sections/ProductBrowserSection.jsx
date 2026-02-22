@@ -1,7 +1,9 @@
+import { useState, useEffect, useMemo } from "react";
 import ProductGrid from "../components/ProductGrid.jsx";
 import { mockProducts } from "../../product/data/mockProducts.js";
 import CategorySidebar from "../components/CategorySidebar.jsx";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams  } from "react-router-dom";
+import { fetchProductsCategory } from "../services/categoryApi.js";
 
 
 
@@ -25,7 +27,12 @@ export default function ProductBrowserSection({title , items  }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const currentNav = searchParams.get("nav") ?? "all";
     const currentCategory = searchParams.get("category") ?? items[0]?.key ;
+    const [products, setProducts] = useState([]);
 
+    const localFallbackProducts = useMemo(
+        () => mockProducts.filter((p) => p.category === currentCategory),
+        [currentCategory],
+    );
 
     const handleSelect = (k) => {
         const sp = new URLSearchParams(searchParams);
@@ -34,9 +41,35 @@ export default function ProductBrowserSection({title , items  }) {
         setSearchParams(sp, { replace: true });
     };
 
+    useEffect(() => {
+        if (!currentCategory) {
+            setProducts([]);
+            return;
+        }
 
-    const filterProducts =
-         mockProducts.filter((p)=>p.category === currentCategory);
+        const controller = new AbortController();
+
+        async function loadProducts() {
+            try {
+                const remoteProducts = await fetchProductsCategory({
+                    nav: currentNav,
+                    category: currentCategory,
+                    signal: controller.signal,
+                });
+                const normalizedProducts = remoteProducts.filter(
+                    (product) => product.category === currentCategory,
+                );
+                setProducts(normalizedProducts);
+            } catch (error) {
+                if (controller.signal.aborted) return;
+                console.warn("Load products from backend failed, use mock data.", error);
+                setProducts(localFallbackProducts);
+            }
+        }
+
+        loadProducts();
+        return () => controller.abort();
+    }, [currentCategory, currentNav, localFallbackProducts]);
 
 
     return (
@@ -61,7 +94,7 @@ export default function ProductBrowserSection({title , items  }) {
                         {/* 右：商品列表 */}
                         <div className="min-w-0">
                             <div className="flex flex-col gap-5">
-                                <ProductGrid products={filterProducts} />
+                                <ProductGrid products={products} />
 
                             </div>
                         </div>

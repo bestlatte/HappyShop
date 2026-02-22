@@ -3,7 +3,7 @@ import { mockProducts } from "../data/mockProducts.js";
 import ProductCarousel from "../components/ProductCarousel.jsx";
 import {useNavigate} from "react-router-dom";
 
-export default function ProductSection({categoryKey, title = "新品上市", tag = "New" }) {
+export default function ProductSection({ nav , categoryKey, title = "新品上市", tag = "New" }) {
     const navigate = useNavigate();
 
     const filterProducts =
@@ -31,7 +31,7 @@ export default function ProductSection({categoryKey, title = "新品上市", tag
                 <button
                     type="button"
                     // onClick={()=>navigate(`/productBrowser?category=${categoryKey}`)}
-                    onClick={() => navigate(`/productBrowser?category=${categoryKey}`)}
+                    onClick={() => navigate(`/productBrowser?nav=${nav}&category=${categoryKey}`)}
                     className="cursor-pointer rounded-xl border border-black-300 px-3 py-3 text-base font-extrabold text-gray-900 hover:bg-gray-50"
                 >
                     查看所有商品

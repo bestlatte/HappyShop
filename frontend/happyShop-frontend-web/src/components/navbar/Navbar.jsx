@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {defaultDatas} from "../../features/productBrowser/data/defaultDatas.js";
 
+
+
+//在react 中 函示參數的傳遞是透過prop物件來做傳遞，所以參數才都是物件
 export default function Navbar({user=false,
                                    cartCount = 0,
                                    brandMain = "黑皮電商",
@@ -19,6 +22,7 @@ export default function Navbar({user=false,
     const [searchParams] = useSearchParams();
     const navInUrl = searchParams.get("nav");
     const isOnBrowser = location.pathname === "/productBrowser";
+
 
 
     function setNav(nextNav) {
