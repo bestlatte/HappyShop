@@ -27,6 +27,8 @@ export default function ProductBrowserSection({title , items  }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const currentNav = searchParams.get("nav") ?? "all";
     const currentCategory = searchParams.get("category") ?? items[0]?.key ;
+
+
     const [products, setProducts] = useState([]);
 
     const localFallbackProducts = useMemo(

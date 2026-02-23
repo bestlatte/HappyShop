@@ -100,8 +100,13 @@ export default function Navbar({user=false,
     function GuestMenu(){
         return (
             <div className="flex items-center gap-6">
-                <a className="text-sm font-semibold hover:underline" href="/login">登入</a>
-                <a className="text-sm font-semibold hover:underline" href="/register">註冊</a>
+                <button className="cursor-pointer text-sm font-semibold hover:underline" onClick={()=>navigate("/login")}>
+                    登入
+                </button >
+
+                <button className="cursor-pointer text-sm font-semibold hover:underline"  onClick={()=>navigate("/login")} >
+                    註冊
+                </button>
 
             </div>
         );

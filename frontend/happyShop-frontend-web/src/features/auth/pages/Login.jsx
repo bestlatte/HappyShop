@@ -44,12 +44,11 @@ export default function Login() {
 
                     <div className="text-sm">
                         尚未建立帳戶？{" "}
-                        <button
-                            type="button"
-                            className="cursor-pointer font-bold underline underline-offset-4 hover:opacity-50"
+                        <span
+                            className=" font-bold   hover:opacity-50"
                         >
-                            註冊
-                        </button>
+                            點選上方信箱註冊
+                        </span>
                     </div>
                 </div>
             </div>
