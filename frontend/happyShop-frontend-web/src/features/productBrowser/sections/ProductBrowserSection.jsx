@@ -4,7 +4,7 @@ import { mockProducts } from "../../product/data/mockProducts.js";
 import CategorySidebar from "../components/CategorySidebar.jsx";
 import { useSearchParams  } from "react-router-dom";
 import { fetchProductsCategory } from "../services/categoryApi.js";
-
+import {setProductBrowserParams} from "../utils/productBrowserNav.js";
 
 
 function SortBar() {
@@ -23,25 +23,26 @@ function SortBar() {
     );
 }
 
-export default function ProductBrowserSection({title , items  }) {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const currentNav = searchParams.get("nav") ?? "all";
-    const currentCategory = searchParams.get("category") ?? items[0]?.key ;
+export default function ProductBrowserSection({title , items ,currentNav,currentCategory,onSelect}) {
 
 
     const [products, setProducts] = useState([]);
+
+    const allowMockFallback =
+        //meta.env.DEVvite內建判斷 你是否在開發模式
+        import.meta.env.DEV &&
+        //True : 允許mockData傳入前端 注意:正式上線改成false 因為上線通常不希望假資料出現在前端頁面
+        String(import.meta.env.VITE_ENABLE_API_MOCK_FALLBACK).toLowerCase() === "true";
 
     const localFallbackProducts = useMemo(
         () => mockProducts.filter((p) => p.category === currentCategory),
         [currentCategory],
     );
+    
+    
 
-    const handleSelect = (k) => {
-        const sp = new URLSearchParams(searchParams);
-        sp.set("nav", currentNav);
-        sp.set("category", k);
-        setSearchParams(sp, { replace: true });
-    };
+
+
 
     useEffect(() => {
         if (!currentCategory) {
@@ -56,22 +57,42 @@ export default function ProductBrowserSection({title , items  }) {
                 const remoteProducts = await fetchProductsCategory({
                     nav: currentNav,
                     category: currentCategory,
+                    //當途中及時切換類別的時候 會丟出 AbortError → 進 catch
                     signal: controller.signal,
                 });
+
+
                 const normalizedProducts = remoteProducts.filter(
                     (product) => product.category === currentCategory,
                 );
                 setProducts(normalizedProducts);
             } catch (error) {
-                if (controller.signal.aborted) return;
-                console.warn("Load products from backend failed, use mock data.", error);
+                //防止先選A 又選B類別 導致應該要顯示B資料 卻顯示了A資料的情形發生
+                if (controller.signal.aborted) return ;
+
+                if (!allowMockFallback) {
+                    console.error("[productBrowser] api failed, fallback disabled", {
+                        nav: currentNav,
+                        category: currentCategory,
+                        error,
+                    });
+                    setProducts([]);
+                    return;
+                }
+
+                console.warn("[productBrowser] api failed, fallback to mock", {
+                    nav: currentNav,
+                    category: currentCategory,
+                    error,
+                });
                 setProducts(localFallbackProducts);
             }
         }
 
         loadProducts();
-        return () => controller.abort();
-    }, [currentCategory, currentNav, localFallbackProducts]);
+        return () => controller.abort();//這段是useEffect的cleanUp
+
+}, [allowMockFallback, currentCategory, currentNav, localFallbackProducts]);
 
 
     return (
@@ -90,7 +111,7 @@ export default function ProductBrowserSection({title , items  }) {
                     <div className="grid  grid-cols-1 md:grid-cols-[240px_minmax(0,1fr)] gap-14">
                         {/* 左：Sidebar */}
                         <div className="hidden md:block sticky top-[200px] left-[50px] h-fit">
-                            <CategorySidebar title={title}   items={items} activeKey={currentCategory} onSelect={handleSelect} />
+                            <CategorySidebar title={title}   items={items} activeKey={currentCategory} onSelect={onSelect} />
                         </div>
 
                         {/* 右：商品列表 */}
