@@ -23,11 +23,11 @@ export default function CategorySidebar({
                 <ul className="space-y-5">
                     {items.map((it) => {
                         const isActive = it.key === activeKey;
+                        console.log(activeKey)
                         return (
                             <li key={it.key}>
                                 <button
                                     type="button"
-                                    //onSelect?.(it.key)  =  setActive("it.key") 父層的狀態改變 進而做出商品區塊的過濾
                                     onClick={() => onSelect?.(it.key)}
                                     className={[
                                         "cursor-pointer",
