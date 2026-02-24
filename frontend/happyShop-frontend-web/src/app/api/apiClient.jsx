@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.vite_API_BASE_URL ?? "/api"
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
 
 
@@ -28,6 +28,7 @@ function createUrl(path , query ){
 
 
 export  async   function apiRequest (path , options ={}){
+    //解構賦值
     const {
         method = "GET",
         query,
@@ -37,6 +38,9 @@ export  async   function apiRequest (path , options ={}){
         token,
     } = options;
 
+    const normalizeMethod = String(method).toUpperCase();
+
+
 
     const requestHeaders = {
         Accept: "application/json",
@@ -44,7 +48,7 @@ export  async   function apiRequest (path , options ={}){
     }
 
     const fetchOptions = {
-        method,
+        method : normalizeMethod,
         headers: requestHeaders,
         signal,
     };
@@ -72,7 +76,7 @@ export  async   function apiRequest (path , options ={}){
     const payload = isJson ? await response.json() : await response.text();
 
     if (!response.ok) {
-        const error = new Error(`API ${method} ${path} failed: ${response.status}`);
+        const error = new Error(`API ${normalizeMethod} ${path} failed: ${response.status}`);
         error.status = response.status;
         error.payload = payload;
         throw error;

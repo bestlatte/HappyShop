@@ -2,12 +2,17 @@ import { useSearchParams } from "react-router-dom";
 import ProductBrowserSection from "../sections/ProductBrowserSection.jsx";
 import { defaultDatas } from "../data/defaultDatas.js";
 import {useEffect} from "react";
+import {setProductBrowserParams} from "../utils/productBrowserNav.js";
 
 export default function ProductBrowser() {
     const [searchParams , setSearchParams] = useSearchParams();
 
+
     const currentNav = searchParams.get("nav") ?? "all";
     const items = defaultDatas[currentNav] ?? [];
+    const currentCategory = searchParams.get("category") ?? items[0]?.key ;
+
+
     const categoryInUrl = searchParams.get("category") ;
     
     //若items沒有值 defaultCategory就會是undefined ，不能硬塞一個預設 category
@@ -15,9 +20,14 @@ export default function ProductBrowser() {
 
 
 
+
     const titleMap = { topic: "主題", all: "分類", charity: "公益關懷" };
     const title = titleMap[currentNav] ?? "分類";
 
+
+    const handleSelect = (k) => {
+        setProductBrowserParams({ searchParams, setSearchParams, nav: currentNav, category: k });
+    };
 
 
 
@@ -46,5 +56,6 @@ export default function ProductBrowser() {
 
 
 
-    return <ProductBrowserSection title={title} items={items} />;
+    return <ProductBrowserSection title={title} items={items} currentNav={currentNav} currentCategory={currentCategory}
+                                  onSelect = {handleSelect} />;
 }
