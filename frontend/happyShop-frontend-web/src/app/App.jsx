@@ -14,7 +14,7 @@ export default function App() {
                     {/* 傳入 user 給 Home（若 Home 需要） */}
                     {/*<Route index element={<Navigate to="/home" replace />} />*/}
                     <Route index element={<Home user={user} />} />
-                    <Route path="/productBrowser" element={<ProductBrowser  />} />
+                    <Route path="/product-browser" element={<ProductBrowser  />} />
                     <Route path="/login" element={<Login  />} />
                 </Route>
             </Routes>
