@@ -3,7 +3,7 @@ import Footer from "../components/footer/Footer.jsx";
 import { Outlet } from "react-router-dom";
 import Home from "../features/product/pages/Home.jsx";
 import {useState} from "react";
-import MobileCategoryDrawer from "../components/mobileCategoryDrawer/MobileCategoryDrawer.jsx";
+import MobileCategoryDrawer from "../features/productBrowser/components/MobileCategoryDrawer.jsx";
 
 export default function RootLayout( ) {
 
