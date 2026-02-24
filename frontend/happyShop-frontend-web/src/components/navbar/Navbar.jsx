@@ -21,7 +21,7 @@ export default function Navbar({user=false,
     //取得當前頁面的網址
     const [searchParams] = useSearchParams();
     const navInUrl = searchParams.get("nav");
-    const isOnBrowser = location.pathname === "/productBrowser";
+    const isOnBrowser = location.pathname === "/product-browser";
 
 
 
@@ -29,10 +29,10 @@ export default function Navbar({user=false,
         const sp = new URLSearchParams(searchParams);
         sp.set("nav", nextNav);
 
-        const firstKey = defaultDatas[nextNav]?.[0]?.key ?? "new";
+        const firstKey = defaultDatas[nextNav]?.[0]?.key ;
         sp.set("category", firstKey);
 
-        navigate(`/productBrowser?${sp.toString()}`);
+        navigate(`/product-browser?${sp.toString()}`);
     }
 
 
