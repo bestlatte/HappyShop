@@ -1,8 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
-import {defaultDatas} from "../../features/productBrowser/data/defaultDatas.js";
-
-
+import { useNavbar } from "./useNavbar.js";
 
 //在react 中 函示參數的傳遞是透過prop物件來做傳遞，所以參數才都是物件
 export default function Navbar({user=false,
@@ -10,92 +6,27 @@ export default function Navbar({user=false,
                                    brandMain = "黑皮電商",
                                    brandSub = "B2C buy",
                                    onHamburgerClick,
+                                   onNavClick, // 新增：由父組件傳入導航處理函數
                                }) {
-    // const [mobileOpen, setMobileOpen] = useState(false);
 
-    const [accountOpen, setAccountOpen] = useState(false);
-    const accountRef = useRef(null);
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    //取得當前頁面的網址
-    const [searchParams] = useSearchParams();
-    const navInUrl = searchParams.get("nav");
-    const isOnBrowser = location.pathname === "/product-browser";
-
-
-
-    function setNav(nextNav) {
-        const sp = new URLSearchParams(searchParams);
-        sp.set("nav", nextNav);
-
-        const firstKey = defaultDatas[nextNav]?.[0]?.key ;
-        sp.set("category", firstKey);
-
-        navigate(`/product-browser?${sp.toString()}`);
-    }
-
-
-
-
-    // 搜尋
-    const [searchOpen, setSearchOpen] = useState(false);
-    const [keyword, setKeyword] = useState("");
-    const desktopSearchRef = useRef(null);
-    const mobileSearchRef = useRef(null);
-
+    const {
+        accountOpen, setAccountOpen,
+        searchOpen, setSearchOpen,
+        keyword, setKeyword,
+        accountRef,
+        desktopSearchRef,
+        mobileSearchRef,
+        handleSearch,
+        navInUrl,
+        isOnBrowser,
+        navigate
+    } = useNavbar();
 
     const navItems = [
         { key: "all", label: "全部分類" },
         { key: "topic", label: "主題" },
         { key: "charity", label: "公益關懷" },
     ];
-
-
-
-    useEffect(() => {
-        {/* current是指說 我當前的這個dom是否存在 也就是說渲染之後 確定會員下拉式選單有存在
-        接下去做e.target的判斷 如果沒有點擊下拉選單 則下拉選單收起來  */}
-        function onDocClick(e) {
-            if (accountRef.current && !accountRef.current.contains(e.target)) {
-                setAccountOpen(false);
-
-            }
-        }
-        function onEsc(e) {
-            if (e.key === "Escape") {
-                setAccountOpen(false);
-                setSearchOpen(false);
-            }
-        }
-        document.addEventListener("mousedown", onDocClick);
-        document.addEventListener("keydown", onEsc);
-        {/*useEffect 裡面的return 會在以下情況下被觸發 關掉頁面  同一個useeffect被重新呼叫*/ }
-
-        return () => {
-            document.removeEventListener("mousedown", onDocClick);
-            document.removeEventListener("keydown", onEsc);
-        };
-    }, []);
-
-    // 開啟搜尋後自動 focus
-    useEffect(() => {
-        //searchOpen = false 時也會嘗試 .focus()  所以做了防呆測試 searchOpen如果是flase 回傳
-        if (!searchOpen) return;
-
-        requestAnimationFrame(() => {
-            desktopSearchRef.current?.focus();
-            mobileSearchRef.current?.focus();
-        });
-    }, [searchOpen]);
-
-    function handleSearch() {
-        const q = keyword.trim();
-        if (!q) return;
-        console.log("搜尋：", q);
-        // 未來可以用來打API
-        // navigate(`/search?q=${encodeURIComponent(q)}`)
-    }
 
     function GuestMenu(){
         return (
@@ -110,9 +41,6 @@ export default function Navbar({user=false,
 
             </div>
         );
-
-
-
     }
 
     function AuthMenu({ user : authUser}){
@@ -174,8 +102,6 @@ export default function Navbar({user=false,
                 )}
             </div>
         );
-
-
     }
 
     // 放大鏡圖
@@ -219,8 +145,6 @@ export default function Navbar({user=false,
                         type="button"
                         className="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-gray-100 md:hidden cursor-pointer"
                         aria-label="選單"
-                        // aria-expanded={undefined}
-                        // onClick={() => setMobileOpen((v) => !v)}
                         onClick={() => onHamburgerClick?.()}
                     >
                         <svg
@@ -258,7 +182,7 @@ export default function Navbar({user=false,
                             <button
                                 type="button"
                                 key={item.key}
-                                onClick={() => setNav(item.key)}
+                                onClick={() => onNavClick?.(item.key)} // 使用傳入的 onNavClick
                                 className={
                                     isActive
                                         ? "cursor-pointer text-sm font-extrabold text-black underline underline-offset-8"
