@@ -1,7 +1,7 @@
 import { useNavbar } from "./useNavbar.js";
 
 //在react 中 函示參數的傳遞是透過prop物件來做傳遞，所以參數才都是物件
-export default function Navbar({user=false,
+export default function Navbar({user={},
                                    cartCount = 0,
                                    brandMain = "黑皮電商",
                                    brandSub = "B2C buy",

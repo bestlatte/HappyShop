@@ -20,7 +20,10 @@ export function useNavbar() {
     // 點擊外部關閉選單 & ESC 關閉
     useEffect(() => {
         function onDocClick(e) {
+            //accountRef.current 是防呆 保證出現了   accountRef.current是指向被ref={accountRef}標記的DOM元素
             if (accountRef.current && !accountRef.current.contains(e.target)) {
+                console.log("target:", e.currentTarget);
+
                 setAccountOpen(false);
             }
         }

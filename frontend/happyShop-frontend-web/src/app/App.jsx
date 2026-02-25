@@ -5,7 +5,8 @@ import ProductBrowser from "../features/productBrowser/pages/ProductBrowser.jsx"
 import Login from "../features/auth/pages/Login.jsx";
 
 export default function App() {
-    const user = null; // 如果要給 Home，也可在此處建立 user
+    // const user = null; // 如果要給 Home，也可在此處建立 user
+
 
     return (
         <BrowserRouter>
@@ -13,7 +14,7 @@ export default function App() {
                 <Route path="/" element={<RootLayout />}>
                     {/* 傳入 user 給 Home（若 Home 需要） */}
                     {/*<Route index element={<Navigate to="/home" replace />} />*/}
-                    <Route index element={<Home user={user} />} />
+                    <Route index element={<Home  />} />
                     <Route path="/product-browser" element={<ProductBrowser  />} />
                     <Route path="/login" element={<Login  />} />
                 </Route>
