@@ -25,9 +25,7 @@ export default function ProductBrowser() {
     const title = titleMap[currentNav] ?? "分類";
 
 
-    const handleSelect = (k) => {
-        setProductBrowserParams({ searchParams, setSearchParams, nav: currentNav, category: k });
-    };
+
 
 
 
@@ -57,5 +55,5 @@ export default function ProductBrowser() {
 
 
     return <ProductBrowserSection title={title} items={items} currentNav={currentNav} currentCategory={currentCategory}
-                                  onSelect = {handleSelect} />;
+                                   searchParams={searchParams} setSearchParams={setSearchParams} />;
 }

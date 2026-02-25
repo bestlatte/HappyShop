@@ -23,7 +23,7 @@ function SortBar() {
     );
 }
 
-export default function ProductBrowserSection({title , items ,currentNav,currentCategory,onSelect}) {
+export default function ProductBrowserSection({title , items ,currentNav,currentCategory,searchParams,setSearchParams}) {
 
 
     const [products, setProducts] = useState([]);
@@ -38,8 +38,10 @@ export default function ProductBrowserSection({title , items ,currentNav,current
         () => mockProducts.filter((p) => p.category === currentCategory),
         [currentCategory],
     );
-    
-    
+
+    const handleSelect = (k) => {
+        setProductBrowserParams({ searchParams, setSearchParams, nav: currentNav, category: k });
+    };
 
 
 
@@ -111,7 +113,7 @@ export default function ProductBrowserSection({title , items ,currentNav,current
                     <div className="grid  grid-cols-1 md:grid-cols-[240px_minmax(0,1fr)] gap-14">
                         {/* 左：Sidebar */}
                         <div className="hidden md:block sticky top-[200px] left-[50px] h-fit">
-                            <CategorySidebar title={title}   items={items} activeKey={currentCategory} onSelect={onSelect} />
+                            <CategorySidebar title={title}   items={items} activeKey={currentCategory} onSelect={handleSelect} />
                         </div>
 
                         {/* 右：商品列表 */}
