@@ -2,7 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import ProductBrowserSection from "../sections/ProductBrowserSection.jsx";
 import { defaultDatas } from "../data/defaultDatas.js";
 import {useEffect} from "react";
-import {setProductBrowserParams} from "../utils/productBrowserNav.js";
+
 
 export default function ProductBrowser() {
     const [searchParams , setSearchParams] = useSearchParams();

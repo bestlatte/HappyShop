@@ -9,7 +9,6 @@ export function getDefaultCategoryForNav(nav) {
 
 export function buildProductBrowserSearchParams(searchParams, patch) {
     const sp = new URLSearchParams(searchParams);
-
     Object.entries(patch).forEach(([key, value]) => {
         if (value === undefined || value === null || value === "") sp.delete(key);
         else sp.set(key, String(value));

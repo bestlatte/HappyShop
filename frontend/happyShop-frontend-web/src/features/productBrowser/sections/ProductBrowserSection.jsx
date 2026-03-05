@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import ProductGrid from "../components/ProductGrid.jsx";
 import { mockProducts } from "../../product/data/mockProducts.js";
 import CategorySidebar from "../components/CategorySidebar.jsx";
-import { useSearchParams  } from "react-router-dom";
 import { fetchProductsCategory } from "../services/categoryApi.js";
 import {setProductBrowserParams} from "../utils/productBrowserNav.js";
 
