@@ -1,4 +1,4 @@
-// src/features/products/pages/ProductDetail.jsx
+// src/features/products/sections/ProductDetailSection.jsx
 import { ProductImageGallery } from "../components/ProductImageGallery";
 import { ProductInfo } from "../components/ProductInfo";
 import {
@@ -6,24 +6,21 @@ import {
   getMockProductInfo,
 } from "../services/mockProductService";
 
-//Mocking Backend Data
-const ProductDetail = () => {
+export const ProductDetailSection = () => {
+  // 1. 發起 API 請求 (目前是 Mock)
   const allImages = getMockProductImages();
   const productInfoData = getMockProductInfo();
 
+  // 2. 組合多個 Components，並處理版面邏輯
   return (
     <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto p-4">
       <div className="w-full md:w-1/2">
-        {/*左邊圖片區*/}
         <ProductImageGallery images={allImages} />
       </div>
 
-      {/*右邊商品資訊區*/}
       <div className="w-full md:w-1/2">
         <ProductInfo info={productInfoData} />
       </div>
     </div>
   );
 };
-
-export default ProductDetail;

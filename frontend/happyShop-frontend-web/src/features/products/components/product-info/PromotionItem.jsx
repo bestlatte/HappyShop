@@ -2,7 +2,7 @@
 import React from "react";
 import { ProductGrid } from "./ProductGrid";
 
-// => iconFile: tag.svg
+// TODO=> iconFile: tag.svg
 const TagIcon = () => (
   <svg
     className="w-5 h-5 text-black flex-shrink-0"

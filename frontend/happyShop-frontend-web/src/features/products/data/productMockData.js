@@ -33,7 +33,7 @@ export const MOCK_PRODUCT_DETAIL = {
   `,
 
   // --- 圖片列表 (左側 Gallery) ---
-  images: Array.from({ length: 6 }, (_, index) => getRandomImage(index)),
+  images: Array.from({ length: 10 }, (_, index) => getRandomImage(index)),
 
   // --- 組合商品 ---
   bundles: [
@@ -111,4 +111,16 @@ export const MOCK_PRODUCT_DETAIL = {
     { id: "s6", name: "海外-日韓", fee: "依結帳總重量計算" },
     { id: "s7", name: "海外-東南亞", fee: "依結帳總重量計算" },
   ],
+  // --- 新增：商品規格與子規格 (配合 ModalVariant) ---
+  variants: {
+    // 主規格 (通常是大小、顏色)
+    sizes: ["F"],
+
+    // 子規格 (通常是包裝、數量，附帶專屬的 SKU 條碼)
+    subSpecs: [
+      { id: "sub_1", name: "30顆/盒", sku: "4710582772887" },
+      { id: "sub_2", name: "60顆/兩盒裝", sku: "4710582772888" },
+      { id: "sub_3", name: "90顆/三盒裝 (多字測試)", sku: "4710582772889" },
+    ],
+  },
 };
