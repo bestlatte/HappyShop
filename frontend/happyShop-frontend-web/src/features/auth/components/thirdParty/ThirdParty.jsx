@@ -1,9 +1,11 @@
-export  default function ThirdParty(){
+import {useNavigate} from "react-router-dom";
 
+export default function ThirdParty({ hideRegisterLink = false }) {
+    const navigate = useNavigate() ;
 
     return(
         <>
-            <div className="w-full max-w-sm px-6">
+            <div className="w-full max-w-[800px] ">
                 {/* 卡片/區塊 */}
                 <div className="flex flex-col gap-6 text-center">
                     {/* 臉書按鈕 */}
@@ -43,22 +45,18 @@ export  default function ThirdParty(){
                         </button>
                     </div>
 
-
-                    <div className="text-sm">
-                        尚未建立帳戶？{" "}
-                        <span
-                            className=" font-bold   hover:opacity-50"
-                        >
-                            點選上方信箱註冊
-                        </span>
-                    </div>
+                    {!hideRegisterLink && (
+                        <div className="text-sm">
+                            尚未建立帳戶？{" "}
+                            <span  onClick={()=>{navigate("/register")}}
+                                className=" cursor-pointer    font-bold   hover:opacity-50"
+                            >
+                                點選註冊
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
         </>
-
-
-
     )
-
-
 }

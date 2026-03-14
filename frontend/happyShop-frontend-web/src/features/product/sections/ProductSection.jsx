@@ -1,9 +1,7 @@
-import ProductGrid from "../../productBrowser/components/ProductGrid.jsx";
 import { mockProducts } from "../data/mockProducts.js";
 import ProductCarousel from "../components/ProductCarousel.jsx";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useMemo, useState} from "react";
-import {fetchProductsCategory} from "../../productBrowser/services/categoryApi.js";
 import {fetchProductsData} from "../services/productApi.js";
 
 export default function ProductSection({ nav , categoryKey, title = "新品上市", tag = "New" }) {

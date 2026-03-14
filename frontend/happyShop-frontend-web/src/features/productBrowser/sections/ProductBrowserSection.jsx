@@ -46,54 +46,55 @@ export default function ProductBrowserSection({title , items ,currentNav,current
 
 
     useEffect(() => {
-        if (!currentCategory) {
-            setProducts([]);
-            return;
-        }
-
         const controller = new AbortController();
 
-        async function loadProducts() {
-            try {
-                const remoteProducts = await fetchProductsCategory({
-                    nav: currentNav,
-                    category: currentCategory,
-                    //當途中及時切換類別的時候 會丟出 AbortError → 進 catch
-                    signal: controller.signal,
-                });
+        if (!currentCategory) {
+            setProducts([]);
+            // 這裡不再直接 return，而是讓它自然結束，這樣下方的 cleanup function 還是會被註冊（雖然 controller 可能沒被用到，但這無害）
+            // 或者更好的方式是用 else 包裹下面的邏輯
+        } else {
+            async function loadProducts() {
+                try {
+                    const remoteProducts = await fetchProductsCategory({
+                        nav: currentNav,
+                        category: currentCategory,
+                        //當途中及時切換類別的時候 會丟出 AbortError → 進 catch
+                        signal: controller.signal,
+                    });
 
 
-                const normalizedProducts = remoteProducts.filter(
-                    (product) => product.category === currentCategory,
-                );
-                setProducts(normalizedProducts);
-            } catch (error) {
-                //防止先選A 又選B類別 導致應該要顯示B資料 卻顯示了A資料的情形發生
-                if (controller.signal.aborted) return ;
+                    const normalizedProducts = remoteProducts.filter(
+                        (product) => product.category === currentCategory,
+                    );
+                    setProducts(normalizedProducts);
+                } catch (error) {
+                    //防止先選A 又選B類別 導致應該要顯示B資料 卻顯示了A資料的情形發生
+                    if (controller.signal.aborted) return;
 
-                if (!allowMockFallback) {
-                    console.error("[productBrowser] api failed, fallback disabled", {
+                    if (!allowMockFallback) {
+                        console.error("[productBrowser] api failed, fallback disabled", {
+                            nav: currentNav,
+                            category: currentCategory,
+                            error,
+                        });
+                        setProducts([]);
+                        return;
+                    }
+
+                    console.warn("[productBrowser] api failed, fallback to mock", {
                         nav: currentNav,
                         category: currentCategory,
                         error,
                     });
-                    setProducts([]);
-                    return;
+                    setProducts(localFallbackProducts);
                 }
-
-                console.warn("[productBrowser] api failed, fallback to mock", {
-                    nav: currentNav,
-                    category: currentCategory,
-                    error,
-                });
-                setProducts(localFallbackProducts);
             }
+            loadProducts();
         }
 
-        loadProducts();
         return () => controller.abort();//這段是useEffect的cleanUp
 
-}, [allowMockFallback, currentCategory, currentNav, localFallbackProducts]);
+    }, [allowMockFallback, currentCategory, currentNav, localFallbackProducts]);
 
 
     return (
