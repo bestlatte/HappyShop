@@ -35,7 +35,7 @@ export default function Navbar({user={},
                     登入
                 </button >
 
-                <button className="cursor-pointer text-sm font-semibold hover:underline"  onClick={()=>navigate("/login")} >
+                <button className="cursor-pointer text-sm font-semibold hover:underline"  onClick={()=>navigate("/register")} >
                     註冊
                 </button>
 

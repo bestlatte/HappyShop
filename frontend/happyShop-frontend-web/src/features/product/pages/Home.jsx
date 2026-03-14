@@ -1,5 +1,4 @@
 import ProductSection from "../sections/ProductSection.jsx";
-import {useState} from "react";
 
 export default function Home() {
 
