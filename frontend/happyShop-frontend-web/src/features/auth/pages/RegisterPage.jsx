@@ -1,11 +1,12 @@
 import ThirdParty from "../components/thirdParty/ThirdParty.jsx";
 import LoginForm from "../components/login/LoginForm.jsx";
+import RegisterForm from "../components/register/RegisterForm.jsx";
 
-export default function Login() {
+export default function RegisterPage() {
     return (
         <div className="min-h-screen bg-[#f5f5f5] px-6 py-10">
             <div className="mx-auto w-full max-w-[560px]">
-                <LoginForm />
+                <RegisterForm/>
 
                 <div className="my-10 flex items-center gap-4">
                     <div className="h-px flex-1 bg-[#d8d1d1]" />
@@ -15,7 +16,9 @@ export default function Login() {
                     <div className="h-px flex-1 bg-[#d8d1d1]" />
                 </div>
 
-                <ThirdParty />
+                <ThirdParty hideRegisterLink={"True"}/>
+
+
             </div>
         </div>
     );

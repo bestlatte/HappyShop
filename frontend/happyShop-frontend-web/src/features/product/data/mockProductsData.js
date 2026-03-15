@@ -1,7 +1,7 @@
 import p1 from "../../../assets/p1.jpg";
 import p2 from "../../../assets/origin.jpg";
 
-export const mockProducts = [
+export const mockProductsData = [
     {
         id: "p1",
         title: "超新商品 C2C 淨顏嫩嫩組",

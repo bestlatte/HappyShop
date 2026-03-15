@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import ProductGrid from "../components/ProductGrid.jsx";
-import { mockProducts } from "../../product/data/mockProducts.js";
+import { mockProductsData } from "../../product/data/mockProductsData.js";
 import CategorySidebar from "../components/CategorySidebar.jsx";
 import { fetchProductsCategory } from "../services/categoryApi.js";
 import {setProductBrowserParams} from "../utils/productBrowserNav.js";
@@ -34,7 +34,7 @@ export default function ProductBrowserSection({title , items ,currentNav,current
         String(import.meta.env.VITE_ENABLE_API_MOCK_FALLBACK).toLowerCase() === "true";
 
     const localFallbackProducts = useMemo(
-        () => mockProducts.filter((p) => p.category === currentCategory),
+        () => mockProductsData.filter((p) => p.category === currentCategory),
         [currentCategory],
     );
 

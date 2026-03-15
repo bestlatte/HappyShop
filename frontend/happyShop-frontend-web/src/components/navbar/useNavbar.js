@@ -69,6 +69,6 @@ export function useNavbar() {
         handleSearch,
         navInUrl,
         isOnBrowser,
-        navigate // 雖然 Navbar 變純 UI，但有些內部跳轉（如登入/首頁）可能還是需要 navigate
+        navigate
     };
 }

@@ -1,4 +1,4 @@
-import { mockProducts } from "../data/mockProducts.js";
+import { mockProductsData } from "../data/mockProductsData.js";
 import ProductCarousel from "../components/ProductCarousel.jsx";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useMemo, useState} from "react";
@@ -15,7 +15,7 @@ export default function ProductSection({ nav , categoryKey, title = "新品上�
         String(import.meta.env.VITE_ENABLE_API_MOCK_FALLBACK).toLowerCase() === "true";
 
     const localFallbackProducts = useMemo(
-        () => mockProducts.filter((p) => p.category === categoryKey),
+        () => mockProductsData.filter((p) => p.category === categoryKey),
         [categoryKey],
     );
 
