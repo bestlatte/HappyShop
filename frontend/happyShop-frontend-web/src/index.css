@@ -21,3 +21,20 @@
 
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* 2. 工具層 */
+@layer utilities {
+  /* 自定義捲軸樣式 */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px; /* 捲軸寬度 */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent; /* 捲軸軌道透明 */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #c6cfdb00; /* 捲軸色 */
+    border-radius: 20px;
+  }
+}

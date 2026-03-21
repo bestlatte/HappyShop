@@ -6,6 +6,8 @@ import LoginPage from "../features/auth/pages/LoginPage.jsx";
 import ForgetPasswordPage from "../features/auth/pages/ForgetPasswordPage.jsx";
 import RegisterForm from "../features/auth/components/register/RegisterForm.jsx";
 import RegisterPage from "../features/auth/pages/RegisterPage.jsx";
+import ProductDetailPage from "../features/products/pages/ProductDetailPage";
+import { ProductLayout } from "../layouts/ProductLayout";
 
 export default function App() {
     // const user = null; // 如果要給 Home，也可在此處建立 user
@@ -22,6 +24,9 @@ export default function App() {
                     <Route path="/login" element={<LoginPage  />} />
                     <Route path="/register" element={<RegisterPage  />} />
                     <Route path="/forget-password" element={<ForgetPasswordPage/>} />
+                </Route>
+                <Route element={<ProductLayout />}>
+                    <Route path="/products/:id" element={<ProductDetailPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
