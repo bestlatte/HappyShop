@@ -1,5 +1,5 @@
 import p1 from "../../../assets/p1.jpg";
-import p2 from "../../../assets/origin.jpg";
+import p2 from "../../../assets/product1-0.jpg";
 
 export const mockProductsData = [
     {
