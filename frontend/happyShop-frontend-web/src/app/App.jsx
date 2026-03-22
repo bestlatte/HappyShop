@@ -8,6 +8,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RootLayout from "../layouts/RootLayout";
 import ProductDetailPage from "../features/products/pages/ProductDetailPage";
 import { ProductLayout } from "../layouts/ProductLayout";
+import { CartLayout } from "../layouts/CartLayout";
+import CartPage from "../features/cart/pages/CartPage";
 
 export default function App() {
   return (
@@ -18,6 +20,10 @@ export default function App() {
         //product detail page
         <Route element={<ProductLayout />}>
           <Route path="/products/:id" element={<ProductDetailPage />} />
+        </Route>
+        //cart page
+        <Route element={<CartLayout />}>
+          <Route path="/cart" element={<CartPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
