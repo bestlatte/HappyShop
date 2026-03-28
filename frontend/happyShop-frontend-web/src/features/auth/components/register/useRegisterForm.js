@@ -1,6 +1,6 @@
-import {useState} from "react";
-import {fetchLogin} from "../../services/loginApi.js";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { fetchRegister } from "../../services/registerApi.js";
 
 export function useRegisterForm() {
     const navigate = useNavigate();
@@ -9,8 +9,10 @@ export function useRegisterForm() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const isFormValid = email.trim() !== "" && password.trim() !== "";
+    const trimmedEmail = email.trim();
+    const isFormValid = trimmedEmail !== "" && password !== "";
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -19,20 +21,29 @@ export function useRegisterForm() {
 
         try {
             setIsSubmitting(true);
-            // 真正打 API 前，先故意停 100ms
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            const result = await fetchLogin({ email, password });
+            setErrorMessage("");
 
-            console.log("登入成功：", result);
-            alert("登入成功");
+            const result = await fetchRegister({
+                email: trimmedEmail,
+                password,
+            });
 
-            setTimeout(() => {
-                navigate("/home");
-            }, 1500);
+            console.log("註冊成功：", result);
+
+            alert("註冊成功");
+            navigate("/home");
         } catch (error) {
-            const errorMessage = "登入失敗，帳號或密碼錯誤";
-            console.error(errorMessage, error);
-            alert(errorMessage);
+            console.error("註冊失敗", error);
+
+            let message = "註冊失敗，請稍後再試";
+
+            if (error?.status === 400) {
+                message = "註冊失敗，請確認輸入資料是否正確";
+            } else if (error?.status === 409) {
+                message = "此電子信箱已被註冊";
+            }
+
+            setErrorMessage(message);
         } finally {
             setIsSubmitting(false);
         }
@@ -44,7 +55,6 @@ export function useRegisterForm() {
 
     return {
         email,
-        navigate,
         setEmail,
         password,
         setPassword,
@@ -52,6 +62,7 @@ export function useRegisterForm() {
         togglePasswordVisibility,
         isSubmitting,
         isFormValid,
+        errorMessage,
         handleSubmit,
     };
 }
