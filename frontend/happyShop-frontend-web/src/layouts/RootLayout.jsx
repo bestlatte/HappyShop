@@ -7,11 +7,11 @@ import { defaultDatas } from "../features/productBrowser/data/defaultDatas.js";
 
 export default function RootLayout( ) {
     const navigate = useNavigate();
-    const user  = null ;
-    // const user = {
-    //     name : "李軒毅" ,
-    //     email : "b409105065@tmu.edu.tw"
-    // }
+    // const user  = null ;
+    const user = {
+        name : "李軒毅" ,
+        email : "b409105065@tmu.edu.tw"
+    }
 
 
     const [mobileCategoryOpen, setMobileCategoryOpen] = useState(false);

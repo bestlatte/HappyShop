@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
 export default function Footer() {
     return (
         <footer className="bg-white text-neutral-900">
+            <div className="h-px w-full bg-neutral-200" />
             <div className="mx-auto max-w-6xl px-4 py-7">
                 {/* 公司資訊（置中、淡灰） */}
                 <div className="text-center text-neutral-500">

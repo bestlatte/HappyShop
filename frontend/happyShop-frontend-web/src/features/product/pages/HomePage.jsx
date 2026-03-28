@@ -5,7 +5,7 @@ export default function HomePage() {
 
 
     return (
-        <div className="py-10 border-bS border-b border-black/10">
+        <div className="py-10 border-bS ">
 
             <ProductSection title="新品上市" tag="New" nav="topic"    categoryKey="new" />
             <ProductSection title="Tense 韓國套組" tag="Tense"  nav="topic" categoryKey="tense" />
