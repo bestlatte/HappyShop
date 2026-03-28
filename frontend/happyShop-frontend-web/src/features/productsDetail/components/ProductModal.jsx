@@ -12,13 +12,14 @@ export const ProductModal = ({ isOpen, onClose, info, onAddToCart }) => {
     info?.variants?.subSpecs[0]?.name || "",
   );
   const [quantity, setQuantity] = useState(1);
+
   if (!isOpen) return null; // 如果沒打開，就什麼都不渲染
 
   // 3. 定義點擊加入購物車的行為
-  const handleAddToCartClick = () => {
+  const handleAddToCartClick = async () => {
     // 呼叫上層傳進來的 API 函式，並把收集到的狀態丟回給上層
-    onAddToCart?.({
-      productId: info.id,
+    await onAddToCart?.({
+      productId: info?.id,
       size: selectedSize,
       subSpec: selectedSubSpec,
       quantity: quantity,
@@ -67,7 +68,7 @@ export const ProductModal = ({ isOpen, onClose, info, onAddToCart }) => {
         <div className="flex flex-col md:flex-row overflow-y-auto custom-scrollbar p-6 pt-14 md:p-10 gap-8">
           {/* 左：商品圖片 (綠) */}
           <div className="w-full md:w-5/12 shrink-0">
-            <div className="bg-gray-100 rounded-xl aspect-[3/4] overflow-hidden">
+            <div className="bg-gray-100 rounded-xl aspect-3/4 overflow-hidden">
               <img
                 src={info.images[0]}
                 alt="商品圖"

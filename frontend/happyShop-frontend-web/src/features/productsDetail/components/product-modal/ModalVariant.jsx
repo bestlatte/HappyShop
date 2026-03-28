@@ -1,13 +1,11 @@
 // src/features/products/components/product-modal/ModalVariant.jsx
-import { useState } from "react";
-
-export const ModalVariant = ({ variants }) => {
-  // default selected options
-  const [selectedSize, setSelectedSize] = useState(variants?.sizes[0] || "");
-  const [selectedSubSpec, setSelectedSubSpec] = useState(
-    variants?.subSpecs[0]?.name || "",
-  );
-
+export const ModalVariant = ({
+  variants,
+  selectedSize,
+  onSizeChange,
+  selectedSubSpec,
+  onSubSpecChange,
+}) => {
   // 顯示條碼
   const currentSubSpecObj = variants?.subSpecs.find(
     (spec) => spec.name === selectedSubSpec,
@@ -23,7 +21,7 @@ export const ModalVariant = ({ variants }) => {
           {variants?.sizes.map((size) => (
             <button
               key={size}
-              onClick={() => setSelectedSize(size)}
+              onClick={() => onSizeChange(size)}
               className={`px-4 py-1.5 border rounded-md text-sm transition-colors ${
                 selectedSize === size
                   ? "border-black font-bold"
@@ -51,7 +49,7 @@ export const ModalVariant = ({ variants }) => {
           {variants?.subSpecs.map((spec) => (
             <button
               key={spec.id}
-              onClick={() => setSelectedSubSpec(spec.name)}
+              onClick={() => onSubSpecChange(spec.name)}
               className={`px-4 py-1.5 border rounded-md text-sm transition-colors ${
                 selectedSubSpec === spec.name
                   ? "border-black font-bold"

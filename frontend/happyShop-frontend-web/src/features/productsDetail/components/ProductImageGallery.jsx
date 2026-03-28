@@ -3,7 +3,7 @@ export const ProductImageGallery = ({ images }) => {
   // 如果沒有圖片，就回傳空或載入中
   if (!images || images.length === 0) {
     return (
-      <div className="animate-pulse bg-gray-200 aspect-[3/4] w-full rounded-2xl" />
+      <div className="animate-pulse bg-gray-200 aspect-3/4 w-full rounded-2xl" />
     );
   }
 

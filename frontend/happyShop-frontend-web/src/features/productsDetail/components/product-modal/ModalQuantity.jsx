@@ -1,11 +1,14 @@
 // src/features/products/components/product-modal/ModalQuantity.jsx
-import { useState } from "react";
+export const ModalQuantity = ({ quantity, onQuantityChange }) => {
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      onQuantityChange(quantity - 1);
+    }
+  };
 
-export const ModalQuantity = () => {
-  const [quantity, setQuantity] = useState(1);
-
-  const handleDecrease = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-  const handleIncrease = () => setQuantity((prev) => prev + 1);
+  const handleIncrease = () => {
+    onQuantityChange(quantity + 1);
+  };
 
   return (
     <div className="border border-yellow-400 p-4 rounded-lg mb-6">
@@ -15,6 +18,7 @@ export const ModalQuantity = () => {
       <div className="flex items-center gap-4">
         <button
           onClick={handleDecrease}
+          disabled={quantity <= 1}
           className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-black"
         >
           −

@@ -5,7 +5,7 @@ import { ProductGrid } from "./ProductGrid";
 // TODO=> iconFile: tag.svg
 const TagIcon = () => (
   <svg
-    className="w-5 h-5 text-black flex-shrink-0"
+    className="w-5 h-5 text-black shrink-0"
     fill="none"
     stroke="currentColor"
     viewBox="0 0 24 24"

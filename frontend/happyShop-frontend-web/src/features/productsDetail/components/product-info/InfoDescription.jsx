@@ -11,7 +11,7 @@ export const InfoDescription = ({ description, warning }) => {
       {warning && (
         <div className="flex gap-2 mb-4 text-sm text-gray-800 leading-relaxed">
           {/* 紅色圓點 */}
-          <span className="flex-shrink-0 w-3 h-3 mt-1.5 bg-rose-500 rounded-full" />
+          <span className="shrink-0 w-3 h-3 mt-1.5 bg-rose-500 rounded-full" />
           {/* 警告文字 */}
           <p>{warning}</p>
         </div>

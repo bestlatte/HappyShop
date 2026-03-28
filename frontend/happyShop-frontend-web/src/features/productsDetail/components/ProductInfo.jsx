@@ -11,7 +11,7 @@ import { InfoShipping } from "./product-info/InfoShipping";
 // import { ProductDrawer } from "./ProductDrawer";
 import { ProductModal } from "./ProductModal";
 
-export const ProductInfo = ({ info }) => {
+export const ProductInfo = ({ info, onAddToCart }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -53,7 +53,13 @@ export const ProductInfo = ({ info }) => {
         <InfoShipping shippingMethods={info.shippingMethods} />
       </div>
 
-      <ProductModal isOpen={isModalOpen} onClose={closeModal} info={info} />
+      <ProductModal
+        key={isModalOpen ? "open" : "closed"}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        info={info}
+        onAddToCart={onAddToCart}
+      />
     </>
   );
 };
