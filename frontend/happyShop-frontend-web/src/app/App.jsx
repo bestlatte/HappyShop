@@ -4,11 +4,9 @@ import HomePage from "../features/product/pages/HomePage.jsx";
 import ProductBrowserPage from "../features/productBrowser/pages/ProductBrowserPage.jsx";
 import LoginPage from "../features/auth/pages/LoginPage.jsx";
 import ForgetPasswordPage from "../features/auth/pages/ForgetPasswordPage.jsx";
-import RegisterForm from "../features/auth/components/register/RegisterForm.jsx";
 import RegisterPage from "../features/auth/pages/RegisterPage.jsx";
 import ProductDetailPage from "../features/products/pages/ProductDetailPage";
 import { ProductLayout } from "../layouts/ProductLayout";
-import CheckOutLayout from "../layouts/CheckOutLayout.jsx";
 import CheckoutPage from "../features/checkout/pages/CheckoutPage.jsx";
 
 export default function App() {
