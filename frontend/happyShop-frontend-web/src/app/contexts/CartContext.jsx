@@ -65,13 +65,13 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
   }, []);
 
-  //  衍生資料：購物車商品總數（navbar 角標用）
+  //  衍生資料：購物車商品總數（角標）
   const cartCount = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
     [cartItems],
   );
 
-  //  衍生資料：購物車總金額
+  //  衍生資料：購物車total price
   const cartTotal = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [cartItems],

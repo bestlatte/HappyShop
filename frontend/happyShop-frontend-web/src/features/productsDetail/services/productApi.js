@@ -2,8 +2,8 @@
 import { apiRequest } from "../../../app/api/apiClient";
 
 /**
- * 任務一：獲取單一商品詳細資料
- * @param {string} productId - 商品的 ID (例如: "product_001")
+ * pick one product detail R
+ * @param {string} productId - 商品的 ID (e.q: "product_001")
  */
 
 export async function fetchProductDetail(productId, { signal } = {}) {
@@ -16,7 +16,7 @@ export async function fetchProductDetail(productId, { signal } = {}) {
 }
 
 /**
- * 任務二：加入購物車
+ * post cart item C
  * @param {Object} payload - 包含要加入的商品資訊
  */
 

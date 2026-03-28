@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { MOCK_CART_DATA, MOCK_CART_PROMOTIONS } from "../data/cartMockData";
 
-// 引入所有 UI 組件
+//UI components
 import { CartDeliveryRegion } from "../components/CartDeliveryRegion";
 import { CartNotice } from "../components/CartNotice";
 import { CartItemRow } from "../components/CartItemRow";
@@ -23,7 +23,7 @@ export const CartSection = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // ==========================================
-  //  核心機制：判斷是否允許使用假資料備援
+  // allow mock fallback? =>>
   // ==========================================
   const allowMockFallback =
     import.meta.env.DEV &&
@@ -35,7 +35,7 @@ export const CartSection = () => {
   const localFallbackPromotions = useMemo(() => MOCK_CART_PROMOTIONS, []);
 
   // ==========================================
-  // 初始化：打真實 API 與 Fallback 邏輯
+  // 初始化：call API && Fallback 邏輯
   // ==========================================
   useEffect(() => {
     // 建立中斷控制器，防止使用者快速切換頁面導致的效能浪費
@@ -44,20 +44,20 @@ export const CartSection = () => {
     async function loadData() {
       setIsLoading(true);
       try {
-        // 勇敢地去打真實的 API！(會傳入 signal 以便隨時中斷)
+        // signal: 讓 API 請求可以被中斷
         const [cartResponse, promoResponse] = await Promise.all([
           fetchCartData({ signal: controller.signal }),
           fetchCartPromotions({ signal: controller.signal }),
         ]);
 
-        // 如果後端 API 真的通了，就存入真實資料
+        // api success =>> update state with real data
         setCartItems(cartResponse);
         setPromotions(promoResponse);
       } catch (error) {
         // 如果是因為切換頁面導致的請求中斷，就安靜退出
         if (controller.signal.aborted) return;
 
-        // 如果 API 失敗，且「不允許」使用假資料 (例如在上線環境或開關沒開)
+        //if API fail && not allow mock fallback => show error and set empty state, else show warning and use mock data
         if (!allowMockFallback) {
           console.error("[CartSection] API failed, fallback disabled", error);
           setCartItems([]);
@@ -65,13 +65,13 @@ export const CartSection = () => {
           return;
         }
 
-        //  如果 API 失敗，且「允許」使用假資料 (開發環境)
+        // api fail + allow mock fallback =>> show warning and use mock data
         console.warn("[CartSection] API failed, fallback to mock", error);
-        // 直接把我們準備好的備胎 (假資料) 餵給畫面
+
         setCartItems(localFallbackCart);
         setPromotions(localFallbackPromotions);
       } finally {
-        // 不管成功或失敗，最後都要關閉載入動畫
+        // success || fail 都要結束 loading 狀態
         setIsLoading(false);
       }
     }
@@ -117,17 +117,17 @@ export const CartSection = () => {
     if (newQuantity < 1) return; // 防呆：數量不能小於 1
 
     try {
-      // 嘗試去打真實的 API 更新數量
+      //call API to update quantity
       await updateCartItemQuantity({ itemId, quantity: newQuantity });
 
-      // 後端回傳成功後，才更新前端畫面
+      // backend success =>> 同步更新 UI
       setCartItems((prev) =>
         prev.map((item) =>
           item.id === itemId ? { ...item, quantity: newQuantity } : item,
         ),
       );
     } catch (error) {
-      //  如果 API 失敗 (例如 404)，但在開發環境允許 Fallback，我們就「假裝成功」直接改畫面
+      // api fail =>> if allowMockFallback then fake success by updating quantity in UI, else alert error
       if (allowMockFallback) {
         console.warn(
           `[CartSection] Update API failed, fallback to mock update for item ${itemId}`,
@@ -138,7 +138,7 @@ export const CartSection = () => {
           ),
         );
       } else {
-        // 真實上線環境如果更新失敗，要跳出警告擋住使用者
+        // real failure without fallback =>> show error message
         alert("更新數量失敗，請稍後再試！");
       }
     }
@@ -167,7 +167,7 @@ export const CartSection = () => {
   };
 
   // ==========================================
-  //  UI 渲染區塊
+  //  UI Render
   // ==========================================
   if (isLoading) {
     return (

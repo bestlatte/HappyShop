@@ -42,9 +42,9 @@ export async function apiRequest(path, options = {}) {
   }
 
   if (body !== undefined) {
-    //body回傳如果是上傳文件，如果不是FormData 那就加上json回傳格式 ，如果是 那就直接放進body ，交給瀏覽器處理
     const isFormData = body instanceof FormData;
     if (!isFormData) {
+      //default to JSON && set content-type
       requestHeaders["Content-Type"] = "application/json";
       fetchOptions.body = JSON.stringify(body);
     } else {

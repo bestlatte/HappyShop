@@ -19,7 +19,7 @@ export default function ProductBrowser() {
   const titleMap = { topic: "主題", all: "分類", charity: "公益關懷" };
   const title = titleMap[currentNav] ?? "分類";
 
-  //如果URL發生錯誤 下面的功能會自行補正URL的錯誤
+  //如果URL發生錯誤 自行補正URL的錯誤
   useEffect(() => {
     const sp = new URLSearchParams(searchParams);
     if (!defaultCategory) {
