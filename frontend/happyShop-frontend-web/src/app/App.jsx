@@ -38,7 +38,10 @@ export default function App() {
             <Route path="/cart" element={<CartPage />} />
 
             {/* 5. 商品詳細頁 */}
-            <Route path="/products/:id" element={<ProductDetailPage />} />
+            <Route
+              path="/products/:id/:title"
+              element={<ProductDetailPage />}
+            />
           </Route>
           {/*//結帳畫面*/}
           {/*<Route element={<CheckOutLayout />}>*/}
