@@ -1,6 +1,6 @@
-import { useRegisterForm } from "./useRegisterForm.js";
+import { useRegisterForm } from "../../hooks/useRegisterForm.js";
 
-export default function RegisterForm() {
+export default function RegisterForm({form}) {
     const {
         email,
         setEmail,
@@ -12,7 +12,7 @@ export default function RegisterForm() {
         isFormValid,
         errorMessage,
         handleSubmit,
-    } = useRegisterForm();
+    } = form;
 
     return (
         <form onSubmit={handleSubmit} className="w-full">

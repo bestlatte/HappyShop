@@ -1,4 +1,4 @@
-import { useForgetPassword } from "./useForgetPassword.js";
+import { useForgetPassword } from "../../hooks/useForgetPassword.js";
 
 export default function ForgetPassword() {
     const {

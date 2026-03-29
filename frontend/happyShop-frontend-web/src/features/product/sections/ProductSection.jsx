@@ -23,7 +23,6 @@ export default function ProductSection({ nav , categoryKey, title = "新品上�
 
     useEffect(() => {
         if (!categoryKey) {
-            setProducts([]);
             return;
         }
 

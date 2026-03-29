@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { useLoginForm } from "./useLoginForm.js";
 
-export default function LoginForm() {
+export default function LoginForm({ form }) {
     const {
         email,
         setEmail,
@@ -11,8 +10,9 @@ export default function LoginForm() {
         togglePasswordVisibility,
         isSubmitting,
         isFormValid,
+        errorMessage,
         handleSubmit,
-    } = useLoginForm();
+    } = form;
 
     return (
         <form onSubmit={handleSubmit} className="w-full">
@@ -41,7 +41,7 @@ export default function LoginForm() {
                     htmlFor="password"
                     className="mb-3 block text-[18px] font-semibold text-black"
                 >
-                    輸入目前的密碼<span className="ml-1">*</span>
+                    密碼<span className="ml-1">*</span>
                 </label>
 
                 <div className="relative">
@@ -52,7 +52,7 @@ export default function LoginForm() {
                         autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="輸入目前的密碼"
+                        placeholder="輸入密碼"
                         className="h-14 w-full rounded-xl border border-[#d9d3d3] bg-white px-5 pr-16 text-[16px] text-black outline-none placeholder:text-[#b8b1b1] focus:border-[#bdb7b7]"
                     />
 
@@ -74,6 +74,10 @@ export default function LoginForm() {
                         忘記密碼？
                     </Link>
                 </div>
+
+                {errorMessage && (
+                    <p className="mt-3 text-sm text-red-500">{errorMessage}</p>
+                )}
             </div>
 
             <button
