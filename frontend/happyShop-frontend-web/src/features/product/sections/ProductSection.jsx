@@ -1,8 +1,16 @@
-import { mockProductsData } from "../data/mockProductsData.js";
+
 import ProductCarousel from "../components/ProductCarousel.jsx";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useMemo, useState} from "react";
 import {fetchProductsData} from "../services/productApi.js";
+import {mockProductsData} from "../../../mockDatas/mockProductsData.js";
+
+
+
+
+
+// import {mockProductsData} from "../data/mockProductsData.js";
+
 
 export default function ProductSection({ nav , categoryKey, title = "新品上市", tag = "New" }) {
     const navigate = useNavigate();
