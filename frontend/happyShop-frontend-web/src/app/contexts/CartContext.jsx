@@ -7,6 +7,15 @@ import {
   useCallback,
 } from "react";
 
+// createContext()：建立一個共享資料櫃
+// Provider：把資料放進櫃子
+// useContext()：其他元件去櫃子裡拿資料
+
+//以下兩種是效能工具
+// useCallback：記住函式
+// useMemo：記住計算結果
+
+//createContext 建立一個共用的通道
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -98,8 +107,9 @@ export const CartProvider = ({ children }) => {
       clearCart,
     ],
   );
-
+  //CartContext.Provider 會把資料往 CartContext 送
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
+//useContext 讀取CartContext
 export const useCart = () => useContext(CartContext);
