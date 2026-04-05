@@ -4,7 +4,7 @@ import { defaultDatas } from "../data/defaultDatas.js";
 import {useEffect} from "react";
 
 
-export default function ProductBrowser() {
+export default function ProductBrowserPage() {
     const [searchParams , setSearchParams] = useSearchParams();
 
 

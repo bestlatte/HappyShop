@@ -1,4 +1,4 @@
-import {apiRequest} from "../../../app/api/apiClient.jsx";
+import {apiRequest} from "../../../app/api/apiClient.js";
 
 
 function normalizeProduct(raw = {}){

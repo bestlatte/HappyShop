@@ -1,6 +1,6 @@
-import {useState} from "react";
-import {fetchLogin} from "../../services/loginApi.js";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { fetchLogin } from "../services/loginApi.js";
+import { useNavigate } from "react-router-dom";
 
 export function useLoginForm() {
     const navigate = useNavigate();
@@ -9,8 +9,10 @@ export function useLoginForm() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const isFormValid = email.trim() !== "" && password.trim() !== "";
+    const trimmedEmail = email.trim();
+    const isFormValid = trimmedEmail !== "" && password !== "";
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -19,20 +21,28 @@ export function useLoginForm() {
 
         try {
             setIsSubmitting(true);
-            // 真正打 API 前，先故意停 100ms
+            setErrorMessage("");
+
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            const result = await fetchLogin({ email, password });
+            const result = await fetchLogin({
+                email: trimmedEmail,
+                password,
+            });
+
 
             console.log("登入成功：", result);
             alert("登入成功");
-
-            setTimeout(() => {
-                navigate("/home");
-            }, 1500);
+            navigate("/home");
         } catch (error) {
-            const errorMessage = "登入失敗，帳號或密碼錯誤";
-            console.error(errorMessage, error);
-            alert(errorMessage);
+            console.error("登入失敗", error);
+            alert("登入失敗，請稍後再試")
+            let message = "登入失敗，請稍後再試";
+
+            if (error?.status === 401 || error?.status === 403) {
+                message = "登入失敗，帳號或密碼錯誤";
+            }
+
+            setErrorMessage(message);
         } finally {
             setIsSubmitting(false);
         }
@@ -44,7 +54,6 @@ export function useLoginForm() {
 
     return {
         email,
-        navigate,
         setEmail,
         password,
         setPassword,
@@ -52,6 +61,7 @@ export function useLoginForm() {
         togglePasswordVisibility,
         isSubmitting,
         isFormValid,
+        errorMessage,
         handleSubmit,
     };
 }

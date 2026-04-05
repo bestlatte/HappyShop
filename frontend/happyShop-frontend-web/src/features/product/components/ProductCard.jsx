@@ -1,8 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import Price from "../../../components/ui/Price";
 
 export default function ProductCard({ p }) {
+    const navigate = useNavigate();
+
+    const handleCardClick = () => {
+        navigate(`/products/${p.id}/${p.title}`);
+    };
+
     return (
-        <div className="w-full">
+        <div 
+            onClick={handleCardClick}
+            className="w-full cursor-pointer"
+        >
             {/* 卡片上半：圖片區 */}
             <div
                 className={[

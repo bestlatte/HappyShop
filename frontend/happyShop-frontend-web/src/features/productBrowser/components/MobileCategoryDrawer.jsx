@@ -1,7 +1,7 @@
-import { useMobileCategoryDrawer } from "../hooks/useMobileCategoryDrawer.js";
+import {useMobileCategoryDrawer} from "../hooks/useMobileCategoryDrawer.js";
 import CategorySidebar from "./CategorySidebar.jsx";
 
-export default function MobileCategoryDrawer({ open, onClose }) {
+export default function MobileCategoryDrawer({open, onClose}) {
     const {
         currentNav,
         currentCategory,
@@ -9,7 +9,7 @@ export default function MobileCategoryDrawer({ open, onClose }) {
         title,
         handleSelectCategory,
         handleSelectNav,
-    } = useMobileCategoryDrawer({ open, onClose });
+    } = useMobileCategoryDrawer({open, onClose});
 
     return (
         <div
@@ -52,9 +52,9 @@ export default function MobileCategoryDrawer({ open, onClose }) {
                     {/* 三個頁籤按鈕 */}
                     <div className="mb-4 flex items-center gap-5 border-b border-black/10 pb-3">
                         {[
-                            { key: "all", label: "全部分類" },
-                            { key: "topic", label: "主題" },
-                            { key: "charity", label: "公益關懷" },
+                            {key: "all", label: "全部分類"},
+                            {key: "topic", label: "主題"},
+                            {key: "charity", label: "公益關懷"},
                         ].map((t) => {
                             const isOn = currentNav === t.key;
                             return (

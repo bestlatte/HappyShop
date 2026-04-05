@@ -29,14 +29,14 @@ src/
 
 為了確保代碼的可維護性與一致性，請嚴格遵守以下分層職責：
 
-| 層級 (Layer) | 主要職責 | 關鍵字 | 範例 |
-| :--- | :--- | :--- | :--- |
-| **Pages** (`pages/`) | **路由入口**、讀取 URL 參數、SEO 設定 | `Route`, `useParams`, `Meta` | `ProductBrowser.jsx` |
-| **Sections** (`sections/`) | **業務邏輯核心**、數據獲取、狀態管理、組合 Components | `useEffect`, `useState`, `API Call` | `ProductBrowserSection.jsx` |
+| 層級 (Layer) | 主要職責 | 關鍵字 | 範例                               |
+| :--- | :--- | :--- |:---------------------------------|
+| **Pages** (`pages/`) | **路由入口**、讀取 URL 參數、SEO 設定 | `Route`, `useParams`, `Meta` | `ProductBrowserPage.jsx`         |
+| **Sections** (`sections/`) | **業務邏輯核心**、數據獲取、狀態管理、組合 Components | `useEffect`, `useState`, `API Call` | `ProductBrowserSection.jsx`      |
 | **Components** (`components/`) | **純 UI 展示**、樣式、互動 (不含複雜邏輯) | `Props`, `CSS`, `Presentational` | `ProductCard.jsx`, `Sidebar.jsx` |
-| **Hooks** (`hooks/`) | **邏輯抽離**、復用、關注點分離 | `use...` | `useMobileCategoryDrawer.js` |
-| **Services** (`services/`) | **API 請求**、數據正規化 (Normalization) | `fetch`, `axios`, `normalize` | `categoryApi.js` |
-| **Utils** (`utils/`) | **純函數工具** (無副作用) | `format`, `validate` | `formatCurrency.js` |
+| **Hooks** (`hooks/`) | **邏輯抽離**、復用、關注點分離 | `use...` | `useMobileCategoryDrawer.js`     |
+| **Services** (`services/`) | **API 請求**、數據正規化 (Normalization) | `fetch`, `axios`, `normalize` | `categoryApi.js`                 |
+| **Utils** (`utils/`) | **純函數工具** (無副作用) | `format`, `validate` | `formatCurrency.js`              |
 
 ---
 

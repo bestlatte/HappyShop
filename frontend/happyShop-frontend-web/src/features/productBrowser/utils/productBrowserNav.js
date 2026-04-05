@@ -5,7 +5,9 @@ export function getDefaultCategoryForNav(nav) {
     return defaultDatas[nav]?.[0]?.key ?? "";
 }
 
-
+// URLSearchParams功用是先複製一份 問號後面的query參數
+// 在複製品上增刪改查
+// 最後再用 setSearchParams(sp) 更新回網址
 
 export function buildProductBrowserSearchParams(searchParams, patch) {
     const sp = new URLSearchParams(searchParams);
