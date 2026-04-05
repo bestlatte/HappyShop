@@ -3,16 +3,16 @@ import { useState, useEffect, useMemo } from "react";
 import { ProductImageGallery } from "../components/ProductImageGallery";
 import { ProductInfo } from "../components/ProductInfo";
 import { fetchProductDetail, postCartItem } from "../services/productApi";
-// import { mockProducts } from "../data/productMockData";
 import { useCart } from "../../../app/contexts/CartContext";
 import { mockProductsData } from "../../../mockDatas/mockProductsData.js";
 
-export const ProductDetailSection = ({ productId = "product_001" }) => {
+export const ProductDetailSection = ({ productId = "p1" }) => {
   // state：商品詳細資料
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const { addToCart } = useCart();
+
   // Mock Fallback?
   const allowMockFallback =
     import.meta.env.DEV &&
@@ -20,10 +20,30 @@ export const ProductDetailSection = ({ productId = "product_001" }) => {
       "true";
 
   const fallbackProduct = useMemo(() => {
-    return (
-      mockProductsData.find((p) => p.id === productId) || mockProductsData[1]
-    );
+    return mockProductsData.find((p) => p.id === productId) ?? null;
   }, [productId]);
+
+  // 資料正規化
+  const normalizeProduct = (p) => {
+    const hasVariants =
+      p.variants?.sizes?.length > 0 || p.variants?.subSpecs?.length > 0;
+
+    return {
+      ...p,
+      images: Array.isArray(p.images) ? p.images : [],
+      variants: hasVariants
+        ? p.variants
+        : { sizes: ["F"], subSpecs: [{ id: "single", name: "F", sku: "" }] },
+    };
+  };
+
+  // 驗證是否為完整的詳細頁資料
+  const isValidDetailProduct = (p) => {
+    return (
+      p && Array.isArray(p.shippingMethods) && p.variants !== undefined
+      // images 不驗證，交給 normalizeProduct 補齊
+    );
+  };
 
   //initialization =>> 讀取商品詳細資料
   useEffect(() => {
@@ -35,7 +55,7 @@ export const ProductDetailSection = ({ productId = "product_001" }) => {
         const response = await fetchProductDetail(productId, {
           signal: controller.signal,
         });
-        setProduct(response);
+        setProduct(normalizeProduct(response));
       } catch (error) {
         if (controller.signal.aborted) return;
 
@@ -45,9 +65,18 @@ export const ProductDetailSection = ({ productId = "product_001" }) => {
           return;
         }
 
+        // 找不到商品，或是商品資料不完整 (e.q 缺乏 images 或 variants)
+        if (!fallbackProduct || !isValidDetailProduct(fallbackProduct)) {
+          console.warn(
+            `[ProductDetail] 找不到對應商品或資料不完整, id: ${productId}`,
+          );
+          setProduct(null);
+          return;
+        }
+
         // API(404) =>> fake success with mock data
         console.warn("[ProductDetail] API failed, fallback to mock data");
-        setProduct(fallbackProduct);
+        setProduct(normalizeProduct(fallbackProduct));
       } finally {
         setIsLoading(false);
       }
@@ -62,18 +91,28 @@ export const ProductDetailSection = ({ productId = "product_001" }) => {
     //NOTE:DEL
     console.log(payload);
     // 防呆
-    if (!payload.subSpec) {
+    const isSingleSpec =
+      product.variants.sizes?.length === 0 &&
+      product.variants.subSpecs?.length === 0;
+
+    if (!isSingleSpec && !payload.subSpec) {
       alert("請先選擇商品規格！");
       return;
     }
     const cartItem = {
       productId: payload.productId,
-      size: payload.size,
-      subSpec: payload.subSpec,
+      size: payload.size || "",
+      subSpec: payload.subSpec || "",
       quantity: payload.quantity,
-      spec: `${payload.size} - ${payload.subSpec}`,
+      // 如果沒規格，就存 "單一規格"
+      spec:
+        payload.size || payload.subSpec
+          ? `${payload.size} - ${payload.subSpec}`
+          : "單一規格",
       name: product.name,
-      image: product.images?.[0],
+      image:
+        product.images?.[0] ||
+        "https://via.placeholder.com/400x500?text=No+Image",
       price: product.price,
     };
 
@@ -89,7 +128,6 @@ export const ProductDetailSection = ({ productId = "product_001" }) => {
       );
     } catch (error) {
       //fail but allow mock fallback?
-
       if (allowMockFallback) {
         console.warn("[ProductDetail] API failed，but allow mock fallback！");
 

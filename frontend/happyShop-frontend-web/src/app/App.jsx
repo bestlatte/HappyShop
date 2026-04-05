@@ -39,7 +39,7 @@ export default function App() {
 
             {/* 5. 商品詳細頁 */}
             <Route
-              path="/products/:id/:title"
+              path="/products/:productId/:title"
               element={<ProductDetailPage />}
             />
           </Route>

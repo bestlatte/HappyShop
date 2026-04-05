@@ -70,8 +70,11 @@ export const ProductModal = ({ isOpen, onClose, info, onAddToCart }) => {
           <div className="w-full md:w-5/12 shrink-0">
             <div className="bg-gray-100 rounded-xl aspect-3/4 overflow-hidden">
               <img
-                src={info.images[0]}
-                alt="商品圖"
+                src={
+                  info?.images?.[0] ||
+                  "https://via.placeholder.com/400x500?text=No+Image"
+                }
+                alt={info?.name || "商品圖片"}
                 className="w-full h-full object-cover"
               />
             </div>
