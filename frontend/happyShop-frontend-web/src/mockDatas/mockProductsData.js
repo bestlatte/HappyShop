@@ -372,6 +372,36 @@ export const mockProductsData = [
     promoTop: "01.31-02.05 00:00-23:59",
     promoTag: "淨顏嫩嫩組",
     category: "new",
+    // --- 圖片資訊 ---
+    images: [p1],
+
+    // --- 標籤與分類 ---
+    tags: ["新品"],
+    categories: ["新品", "居家"],
+
+    // --- 警告與描述 ---
+    warning: "",
+    description: "新品展示用假資料。",
+
+    // --- 組合商品 ---
+    bundles: [],
+
+    // --- 相關商品 ---
+    relatedProducts: [],
+
+    // --- 優惠活動 ---
+    promotions: [],
+
+    // --- 運送方式 ---
+    shippingMethods: [],
+
+    // --- 商品規格與子規格 ---
+    variants: {
+      sizes: [],
+      subSpecs: [],
+    },
+
+
   },
   {
     id: "p8",
