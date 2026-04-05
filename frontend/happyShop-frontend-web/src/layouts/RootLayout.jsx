@@ -13,7 +13,6 @@ export default function RootLayout() {
 
   const { cartCount } = useCart();
 
-
   // if current path is "/cart", then it's cart page
   const isCartPage = location.pathname === "/cart";
 
