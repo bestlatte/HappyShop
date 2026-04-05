@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import ProductGrid from "../components/ProductGrid.jsx";
-import { mockProductsData } from "../../product/data/mockProductsData.js";
+import {mockProductsData} from "../../../mockDatas/mockProductsData.js";
 import CategorySidebar from "../components/CategorySidebar.jsx";
 import { fetchProductsCategory } from "../services/categoryApi.js";
 import { setProductBrowserParams } from "../utils/productBrowserNav.js";

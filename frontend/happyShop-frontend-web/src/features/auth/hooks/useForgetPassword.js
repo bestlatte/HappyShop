@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchForgetPassword } from "../../services/forgetPasswordApi.js";
+import { fetchForgetPassword } from "../services/forgetPasswordApi.js";
 
 export function useForgetPassword() {
     const [email, setEmail] = useState("");

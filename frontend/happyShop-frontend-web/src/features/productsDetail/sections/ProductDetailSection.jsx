@@ -3,8 +3,9 @@ import { useState, useEffect, useMemo } from "react";
 import { ProductImageGallery } from "../components/ProductImageGallery";
 import { ProductInfo } from "../components/ProductInfo";
 import { fetchProductDetail, postCartItem } from "../services/productApi";
-import { mockProducts } from "../data/productMockData";
+// import { mockProducts } from "../data/productMockData";
 import { useCart } from "../../../app/contexts/CartContext";
+import { mockProductsData } from "../../../mockDatas/mockProductsData.js";
 
 export const ProductDetailSection = ({ productId = "product_001" }) => {
   // state：商品詳細資料
@@ -19,7 +20,9 @@ export const ProductDetailSection = ({ productId = "product_001" }) => {
       "true";
 
   const fallbackProduct = useMemo(() => {
-    return mockProducts.find((p) => p.id === productId) || mockProducts[0];
+    return (
+      mockProductsData.find((p) => p.id === productId) || mockProductsData[1]
+    );
   }, [productId]);
 
   //initialization =>> 讀取商品詳細資料
