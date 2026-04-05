@@ -30,6 +30,7 @@ export const ProductDetailSection = ({ productId = "p1" }) => {
 
     return {
       ...p,
+      name: p.name ?? p.title,
       images: Array.isArray(p.images) ? p.images : [],
       variants: hasVariants
         ? p.variants
