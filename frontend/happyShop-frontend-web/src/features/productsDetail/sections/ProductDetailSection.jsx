@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { ProductImageGallery } from "../components/ProductImageGallery";
 import { ProductInfo } from "../components/ProductInfo";
 import { fetchProductDetail, postCartItem } from "../services/productApi";
-import { useCart } from "../../../app/contexts/CartContext";
+import { useCart } from "../../../app/contexts/useCart";
 import { mockProductsData } from "../../../mockDatas/mockProductsData.js";
 
 export const ProductDetailSection = ({ productId = "p1" }) => {

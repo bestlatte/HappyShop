@@ -5,7 +5,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import MobileCategoryDrawer from "../features/productBrowser/components/MobileCategoryDrawer.jsx";
 import { defaultDatas } from "../features/productBrowser/data/defaultDatas.js";
-import { useCart } from "./../app/contexts/CartContext.jsx";
+import { useCart } from "./../app/contexts/useCart.js";
 
 export default function RootLayout() {
   const navigate = useNavigate();
