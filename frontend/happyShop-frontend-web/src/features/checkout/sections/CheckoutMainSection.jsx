@@ -6,6 +6,12 @@ import RecipientInfoSection from "./RecipientInfoSection";
 import PaymentMethodSection from "./PaymentMethodSection";
 import InvoiceSection from "./InvoiceSection";
 import OrderSummarySection from "./OrderSummarySection";
+import InvoiceForm from "../components/InvoiceForm.jsx";
+import OrderSummaryCard from "../components/OrderSummaryCard.jsx";
+import SubmitOrderBar from "../components/SubmitOrderBar.jsx";
+import PaymentMethodSelector from "../components/PaymentMethodSelector.jsx";
+import RecipientForm from "../components/RecipientForm.jsx";
+import ShippingMethodSelector from "../components/ShippingMethodSelector.jsx";
 
 export default function CheckoutMainSection() {
     const navigate = useNavigate();
@@ -65,38 +71,64 @@ export default function CheckoutMainSection() {
                     </div>
                 </section>
 
-                <ShippingMethodSection
-                    value={shippingMethod}
-                    onChange={setShippingMethod}
-                />
-                <RecipientInfoSection
-                    recipient={recipient}
-                    onFieldChange={updateRecipient}
-                />
-                <PaymentMethodSection
-                    paymentMethod={paymentMethod}
-                    onPaymentMethodChange={setPaymentMethod}
-                    creditCard={creditCard}
-                    onCreditCardChange={updateCreditCard}
-                />
-                <InvoiceSection
-                    invoice={invoice}
-                    onFieldChange={updateInvoice}
-                />
+                <section className="border-b border-[#dddddd] py-12">
+                    <h2 className="mb-10 text-[22px] font-extrabold text-black">
+                        選擇配送方式
+                    </h2>
+
+                    <ShippingMethodSelector value={shippingMethod} onChange={setShippingMethod} />
+                </section>
+                <section className="py-12">
+                    <h2 className="mb-12 text-[22px] font-extrabold text-black">
+                        收件資訊
+                    </h2>
+
+                    <RecipientForm recipient={recipient} onFieldChange={updateRecipient} />
+                </section>
+                <section className="border-b border-[#dddddd] py-12">
+                    <h2 className="mb-10 text-[22px] font-extrabold text-black">
+                        付款方式
+                    </h2>
+
+                    <PaymentMethodSelector
+                        paymentMethod={paymentMethod}
+                        onPaymentMethodChange={setPaymentMethod}
+                        creditCard={creditCard}
+                        onCreditCardChange={updateCreditCard}
+                    />
+                </section>
+                <section className=" py-12">
+                    <h2 className="mb-10 text-[22px] font-extrabold text-black">
+                        電子發票
+                    </h2>
+
+                    <InvoiceForm invoice={invoice} onFieldChange={updateInvoice} />
+                </section>
             </div>
 
             {/* 右側 */}
             <aside>
-                <OrderSummarySection
-                    items={cartItems}
-                    subtotal={cartTotal}
-                    shippingFee={shippingFee}
-                    discount={discount}
-                    total={total}
-                    isSubmitting={isSubmitting}
-                    onSubmit={handleSubmit}
-                />
+                <section className="sticky top-20">
+                    <div className="space-y-4">
+                        <OrderSummaryCard
+                            items={cartItems}
+                            subtotal={cartTotal}
+                            shippingFee={shippingFee}
+                            discount={discount}
+                            total={total}
+                            notes={[]}
+                        />
+
+                        <SubmitOrderBar
+                            total={total}
+                            isSubmitting={isSubmitting}
+                            onSubmit={handleSubmit}
+                        />
+                    </div>
+                </section>
+
             </aside>
         </section>
     );
 }
+
