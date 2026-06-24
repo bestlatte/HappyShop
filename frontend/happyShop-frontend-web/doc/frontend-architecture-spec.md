@@ -1,253 +1,200 @@
-# HappyShop Web 前端架構與開發規格（Team Spec / Source of Truth）
+# HappyShop Web 前端架構與開發規格（Source of Truth）
 
-> 目的：讓後續所有頁面開發都遵循同一套架構、命名、資料流與 API 封裝規則，降低維護成本與整合風險。
+> 本文件為前端規範唯一真相來源（single source of truth）。  
+> `DEVELOPMENT_GUIDE.md` 僅作為導引摘要，若有衝突以本文件為準。
 
-## 0. 文件治理（必讀）
+## 0. 文件治理
 
-- 本文件是前端規範唯一真相來源（single source of truth）。
-- `DEVELOPMENT_GUIDE.md` 僅作為新成員導引與快速索引，不定義新規則。
-- 規則衝突時，以本文件為準。
-- 建議判斷標準：
-  - MUST：必須遵守，違反需在 PR 明確說明理由。
-  - SHOULD：建議遵守，可在特定情境彈性調整。
+- `MUST`：必須遵守，若偏離需在 PR 說明原因與替代方案。
+- `SHOULD`：建議遵守，可依需求調整，但要維持一致性。
+- 規則更新流程：先改本文件，再同步導引文件。
 
-## 1. 架構總覽
+---
+
+## 1. 當前技術基線
 
 ### 1.1 技術棧
-- React + Vite
-- React Router（頁面路由）
-- Tailwind utility class（樣式）
-- Fetch + 自製 `apiRequest`（HTTP client）
 
-### 1.2 專案分層（Web）
+- React + Vite
+- React Router
+- Tailwind CSS
+- Fetch + 自製 `apiRequest`
+
+### 1.2 專案分層（現況）
+
 ```text
 src/
   app/
-    App.jsx                 # 路由註冊入口
+    App.jsx
     api/
-      apiClient.jsx         # 全站共用 HTTP 封裝
+      apiClient.js              # MUST: 全站唯一 HTTP client
+    contexts/
+      AuthContext.jsx
+      CartContext.jsx
   layouts/
-    RootLayout.jsx          # 全站骨架（Navbar/Footer/Outlet）
+    RootLayout.jsx
   components/
-    ui/                     # 可重用無商業邏輯元件
-    ...                     # 共用版型元件
+    ui/
+      LoadingState.jsx
+      ErrorState.jsx
+      Price.jsx
   features/
-    <featureName>/
-      pages/                # 路由頁
-      sections/             # 頁內區塊
-      components/           # feature 內共用元件
-      services/             # 該 feature API 呼叫
-      data/                 # mock/static data
+    <feature>/
+      pages/
+      sections/
+      components/
+      services/
+      hooks/
+      data/
+      utils/
 ```
 
-### 1.3 資料流原則
-1. `pages` 負責 URL 與場景組裝。
-2. `sections` 負責頁面業務流程（載入、切換、fallback）。
-3. `services` 只做 API IO + normalize，不放 UI 邏輯。
-4. `components` 只接 props 顯示，盡量保持可重用。
+### 1.3 分層職責（MUST）
+
+1. `pages`：路由入口與場景組裝。
+2. `sections`：頁面業務流程（載入/錯誤/fallback）。
+3. `services`：API I/O + normalize，不放 UI 邏輯。
+4. `components`：以展示為主，不直接打 API。
 
 ---
 
-## 2. 路由與頁面規格
+## 2. 路由規範
 
-### 2.1 路由配置規範
-- 路由統一在 `src/app/App.jsx` 註冊。
-- 所有前台頁面掛在 `RootLayout` 下。
-- path 命名使用小寫 + kebab-case（例如 `/product-browser`），避免混用 camelCase (駝峰)。
+### 2.1 命名規則
 
-### 2.2 Query String 規範
-- 可篩選列表頁（如商品瀏覽）必須以 URL 儲存狀態（例如 `nav`, `category`, `sort`）。
-- 頁面初始化時要做 URL 合法化（invalid value 自動修正為預設值）。
-- 任一 UI 操作改變篩選條件時，優先更新 URL，再觸發資料重新載入。
+- `MUST` 使用小寫 kebab-case。
+- 例：`/product-browser`、`/forget-password`。
+
+### 2.2 既有相容策略
+
+- 目前保留 `/productBrowser` -> `/product-browser` 的轉址，避免舊連結失效。
+- `SHOULD`：新功能不得新增 camelCase 路徑。
+
+### 2.3 Query String（商品瀏覽）
+
+- `MUST` 將可分享狀態放在 URL（例如 `nav`, `category`）。
+- 頁面初始化時需做 URL 合法化（當類別無效時自動修正）。
 
 ---
 
-## 3. API 封裝規格（必須遵守）
+## 3. API 與資料層規範
 
-## 3.1 基礎原則
-- 禁止在元件內直接 `fetch`。
-- 一律透過 `app/api/apiClient.jsx` 的 `apiRequest`。
-- 各 feature 只能透過 `features/<name>/services/*Api.js` 對外提供資料方法。
+### 3.1 API Client（MUST）
 
-### 3.2 apiClient 契約
-- `apiRequest(path, options)`：
-  - `method`：預設 GET，自動轉大寫。
-  - `query`：物件轉 query string，忽略 `undefined/null/""`。
-  - `body`：非 FormData 自動 JSON.stringify 並加 `Content-Type`。
-  - `token`：存在時自動加 `Authorization: Bearer <token>`。
-  - 錯誤時丟出包含 `status` 與 `payload` 的 Error。
+- 一律透過 `src/app/api/apiClient.js` 的 `apiRequest` 呼叫。
+- 禁止在 components 內直接 `fetch`。
+- `apiRequest` 支援：
+  - `query` 自動過濾空值
+  - `body` 非 FormData 時自動 JSON 化
+  - `withAuth` 自動帶 `Authorization: Bearer <token>`
+  - 失敗丟出含 `status`/`payload` 的 Error
 
-### 3.3 環境變數規範
-- API base URL 統一使用 `import.meta.env.VITE_API_BASE_URL`。
-- 未設定時 fallback `/api`。
-- `.env` 建議：
+### 3.2 Endpoint 命名現況與治理
+
+- 目前 API 命名已完成第一波收斂（例如 `/products/:id`、`/auth/login`、`/members`、`/orders`）。
+- `SHOULD`：逐步收斂到 REST 命名（複數資源）。
+- `MUST`：Service 層 absorb 命名差異，UI 不直接依賴 endpoint 細節。
+
+### 3.3 Service 去重策略（已落地）
+
+- 商品清單共用邏輯已集中到：
+  - `features/product/services/productCatalogApi.js`
+- `productApi.js` 與 `categoryApi.js` 僅保留薄封裝差異。
+- `MUST`：後續若調整商品卡片欄位，優先改 `normalizeProductCard()` 單點。
+
+### 3.4 DTO -> ViewModel（MUST）
+
+- UI 只吃 normalize 後資料。 U
+- UI 只吃 normalize 後資料。
+- 後端欄位異動應只修改 service normalize，不直接改各頁 UI。
+
+---
+
+## 4. Auth / Session 規範（已落地）
+
+### 4.1 全域來源
+
+- 登入態以 `AuthContext` 為全域單一來源。
+- `RootLayout`、`Navbar` 透過 `useAuth()` 讀取 `user` 與 `logout`。
+
+### 4.2 Session 儲存
+
+- 使用 `features/auth/utils/authStorage.js` 統一管理：
+  - `happyShopAccessToken`
+  - `happyShopUser`
+- `MUST`：不要在其他檔案自行拼接 localStorage key。
+
+### 4.3 開發環境 mock auth
+
+- `AuthContext` 支援 dev mock session，便於無後端時測試頭像與會員選單。
+- 受 `.env` 變數控制（見第 7 章）。
+
+---
+
+## 5. 非同步請求 / Fallback / UI 狀態
+
+### 5.1 非同步請求（MUST）
+
+- 使用 `AbortController` 避免 race condition。
+- `catch` 先判斷 `signal.aborted`。
+
+### 5.2 Mock fallback（現況）
+
+- 目前多數 section 使用規則：
+  - `import.meta.env.DEV && VITE_ENABLE_API_MOCK_FALLBACK === "true"`
+- `MUST`：fallback 決策放在 section/page，不放 service。
+
+### 5.3 共用狀態元件（已落地）
+
+- `components/ui/LoadingState.jsx`
+- `components/ui/ErrorState.jsx`
+- `SHOULD`：新頁面優先使用共用元件，不重寫一套。
+
+---
+
+## 6. 命名與程式風格
+
+- 檔名：React component 使用 PascalCase。
+- 變數與函式：camelCase。
+- 常數：UPPER_SNAKE_CASE。
+- API 函式命名建議：`fetch/create/update/delete` 前綴。
+- 註解優先解釋「為什麼」，避免重述程式碼本身。
+
+---
+
+## 7. 環境變數規範
+
+### 7.1 必備變數
+
 ```bash
 VITE_API_BASE_URL=http://localhost:8080/api
+VITE_ENABLE_API_MOCK_FALLBACK=true
+VITE_ENABLE_DEV_MOCK_AUTH=false
+VITE_DEV_MOCK_USER_NAME=Demo User
+VITE_DEV_MOCK_USER_EMAIL=demo@happyshop.dev
 ```
 
-### 3.4 Service 規範
-每個 service 檔案都要有：
-1. `normalizeXxx(raw)`：把後端欄位整理成前端標準格式。
-2. `fetchXxx(params)`：呼叫 `apiRequest` 並回傳 normalized data。
-3. 不可在 service 回傳 React 元件所需之外的混亂欄位。
+### 7.2 使用原則
 
-範例（概念）：
-```js
-export async function fetchProducts({ nav, category, signal }) {
-  const payload = await apiRequest('/products', { method: 'GET', query: { nav, category }, signal });
-  const items = Array.isArray(payload) ? payload : (payload.items ?? []);
-  return items.map(normalizeProduct);
-}
-```
+- `VITE_API_BASE_URL`：API base URL（未設定 fallback `/api`）。
+- `VITE_ENABLE_API_MOCK_FALLBACK`：控制 section fallback。
+- `VITE_ENABLE_DEV_MOCK_AUTH`：僅開發環境提供假登入狀態。
 
 ---
 
-## 4. 資料層設計規範
+## 8. 目前已知技術債（需持續收斂）
 
-### 4.1 Domain Model（前端標準）
-以商品為例，前端統一欄位：
-```ts
-Product {
-  id: string
-  title: string
-  imageKey: string
-  price?: number
-  salePrice?: number
-  promoTop?: string
-  promoTag?: string
-  badge?: string
-  category?: string
-}
-```
-
-### 4.2 DTO vs ViewModel (還沒研究)
-- **DTO（後端回傳）**：不可直接在 UI 使用。
-- **ViewModel（前端標準）**：只允許 UI 使用 normalize 後資料。
-- 若後端欄位改名，只改 normalize，不動 UI 元件。
-
-### 4.3 Mock/Fallback 策略
-- `features/*/data/` 放 mock data。
-- API 失敗時可 fallback mock（限開發期/特定頁），並輸出可追蹤 warning。
-- 上線前需在 README 或環境旗標標記哪些頁面仍用 fallback。
-
-#### 4.3.1 在本專案的落地方式
-1. **每個 feature 只在 section 層決定是否 fallback**
-  - 例如 `features/productBrowser/sections/ProductBrowserSection.jsx`。
-  - `services/*Api.js` 保持純 API + normalize，不要在 service 內塞 mock 判斷。
-2. **加上環境旗標控制 fallback 是否允許** (還在研究，先遵守)
-  - 建議使用：`VITE_ENABLE_API_MOCK_FALLBACK=true|false`。
-  - 預設規則：開發環境可開；正式環境應關閉。
-3. **warning 要可追蹤**
-  - 統一格式：`[feature] api failed, fallback to mock`。
-  - 需附上頁面條件（如 `nav`、`category`）與 error。
-4. **README 維護 fallback 清單**
-  - 至少記錄：頁面、啟用條件、移除時機、負責人。
-
-#### 4.3.2 參考實作片段（ProductBrowser）
-```js
-const allowMockFallback = import.meta.env.DEV || import.meta.env.VITE_ENABLE_API_MOCK_FALLBACK === 'true';
-
-try {
-  const remoteProducts = await fetchProductsCategory({ nav: currentNav, category: currentCategory, signal: controller.signal });
-  setProducts(remoteProducts.filter((p) => p.category === currentCategory));
-} catch (error) {
-  if (controller.signal.aborted) return;
-
-  if (!allowMockFallback) {
-    throw error; // 或改成 setError(error)
-  }
-
-  console.warn('[productBrowser] api failed, fallback to mock', {
-    nav: currentNav,
-    category: currentCategory,
-    error,
-  });
-  setProducts(localFallbackProducts);
-}
-```
-
-#### 4.3.3 上線前檢查（Release Gate）
-- `VITE_ENABLE_API_MOCK_FALLBACK` 在 production 應為 `false`。
-- README 的 fallback 清單不可為「未知狀態」。
-- 若頁面仍依賴假資料，PR 必須寫清楚移除日期與阻塞原因。
+1. 後端尚未正式落地，前端 endpoint 命名仍需在後端實作時做最終契約確認。
+2. 部分頁面仍使用 `alert` 作錯誤回饋（建議收斂為一致 toast/error UI）。
 
 ---
 
-## 5. 狀態管理規格
+## 9. PR 檢查清單（MUST）
 
-### 5.1 狀態分層
-- URL state：可分享/可重整保留（篩選、分頁、排序）。
-- Page state：頁面資料、loading/error（`useState/useEffect`）。
-- Global state：登入態、購物車數量（後續建議導入 store，如 Zustand/Redux）。
-
-### 5.2 非同步請求
-- 一律使用 `AbortController` 避免 race condition。
-- 依賴變更就中止前一個請求。
-- catch 時先判斷 `signal.aborted`。
-
----
-
-## 6. UI 元件規範
-
-### 6.1 元件職責
-- `components/ui`：純展示、最大重用。
-- `features/*/components`：只服務該 feature。
-- 避免「超大元件」，超過 ~200 行建議拆分。
-
-### 6.2 Props 設計
-- props 命名語意化（`activeKey`, `onSelect`, `items`）。
-- callback 一律 `onXxx` 命名。
-- 禁止 child 直接改 URL 或做 API，透過父層傳入 handler。
-
----
-
-## 7. 命名與程式碼風格
-
-- 檔名：React component 使用 PascalCase；一般模組/工具用 camelCase 或 kebab-case。
-- 常數：`UPPER_SNAKE_CASE`。
-- API 方法：`fetchXxx/createXxx/updateXxx/deleteXxx`。
-- 註解：優先解釋「為什麼」，不要重複程式碼本身。
-- 移除未使用 import 與 dead code。
-
----
-
-## 8. 錯誤處理與可觀測性
-
-- service 層 throw 統一 Error（含 status/payload）。
-- section/page 層決定 UI fallback：
-  - 可恢復錯誤：提示 + 重試。
-  - 不可恢復錯誤：導回安全頁或顯示空狀態。
-- console 訊息格式建議：`[feature] action failed`。
-
----
-
-## 9. 團隊協作流程（PR 規範）
-
-每張 PR 至少包含：
-1. 變更範圍（路由、元件、API、資料模型）。
-2. API 契約（endpoint、request、response、錯誤碼）。
-3. 自測清單（URL 情境、空資料、API fail、RWD）。
-4. 若有 fallback/mock，需明確註記何時移除。
-
----
-
-## 10. 下一步落地建議（建議優先順序）
-
-1. **統一路由路徑命名**：`/productBrowser` 改成 `/product-browser`。
-2. **拆分 service 重複邏輯**：避免 `productApi` 與 `categoryApi` 重複。
-3. **補齊 auth/session 層**：將 `user` 由 layout 暫時常數改為全域狀態來源。
-4. **建立錯誤與 loading 共用元件**：避免每頁重複寫。
-5. **新增 `.env.example`**：讓新成員可快速啟動。
-
----
-
-## 11. 新頁面開發 Checklist（可直接複製到 Issue）
-
-- [ ] 新頁面已在 `App.jsx` 註冊並掛在正確 layout。
-- [ ] 篩選狀態可由 URL 還原。
-- [ ] API 呼叫透過 `apiRequest`，無元件內直呼 fetch。
-- [ ] service 有 normalize，UI 不直接吃 DTO。
-- [ ] 處理 loading / error / empty 三種狀態。
-- [ ] 主要互動有基本可用性（鍵盤、aria-label）。
-- [ ] 已完成最少一次 lint 與 build 檢查。
-
+- [ ] 路由是否遵守 kebab-case。
+- [ ] API 是否只透過 `apiClient.js`。
+- [ ] service 是否有 normalize，UI 不直接吃 DTO。
+- [ ] 是否處理 loading / error / empty。
+- [ ] 是否有 race condition 防護（AbortController）。
+- [ ] 若使用 mock fallback，是否明確記錄條件與移除策略。
+- [ ] 已完成至少一次 lint 與關鍵路徑手測。
