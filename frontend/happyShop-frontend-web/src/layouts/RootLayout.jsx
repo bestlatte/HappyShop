@@ -6,26 +6,17 @@ import { useState } from "react";
 import MobileCategoryDrawer from "../features/productBrowser/components/MobileCategoryDrawer.jsx";
 import { defaultDatas } from "../features/productBrowser/data/defaultDatas.js";
 import { useCart } from "./../app/contexts/CartContext.jsx";
+import { useAuth } from "../app/contexts/AuthContext.jsx";
 
 export default function RootLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
   const { cartCount } = useCart();
+  const { user, logout } = useAuth();
 
   // if current path is "/cart", then it's cart page
   const isCartPage = location.pathname === "/cart";
-
-  const user = null;
-  /* 
-        const user = {
-
-        name: "李軒毅",
-
-        email: "b409105065@tmu.edu.tw",
-
-     };
-     */
 
   const [mobileCategoryOpen, setMobileCategoryOpen] = useState(false);
 
@@ -43,6 +34,7 @@ export default function RootLayout() {
           onNavClick={handleNavClick}
           user={user}
           cartCount={cartCount}
+          onLogout={logout}
         />
       </div>
 

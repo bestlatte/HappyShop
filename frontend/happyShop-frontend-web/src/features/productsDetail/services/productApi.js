@@ -1,5 +1,5 @@
 // src/features/products/services/productApi.js
-import { apiRequest } from "../../../app/api/apiClient";
+import { apiRequest } from "../../../app/api/apiClient.js";
 
 /**
  * pick one product detail R

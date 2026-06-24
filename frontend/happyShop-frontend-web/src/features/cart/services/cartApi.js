@@ -1,6 +1,6 @@
 // src/features/cart/services/cartApi.js
 
-import { apiRequest } from "../../../app/api/apiClient";
+import { apiRequest } from "../../../app/api/apiClient.js";
 
 // Data Normalization
 function normalizeCartItem(raw = {}) {
@@ -61,13 +61,18 @@ export async function deleteCartItem({ itemId, signal } = {}) {
 
   return payload;
 }
-// 提交結帳 C
-export async function submitCheckout({ data, signal } = {}) {
-  const payload = await apiRequest("/cart/checkout", {
+// 建立訂單 C
+export async function createOrder({ data, signal } = {}) {
+  const payload = await apiRequest("/orders", {
     method: "post",
     body: data,
     signal,
   });
 
   return payload;
+}
+
+// backward compatible alias
+export async function submitCheckout({ data, signal } = {}) {
+  return createOrder({ data, signal });
 }

@@ -15,12 +15,16 @@ import {
   updateCartItemQuantity,
   deleteCartItem,
 } from "../services/cartApi";
+import LoadingState from "../../../components/ui/LoadingState.jsx";
+import ErrorState from "../../../components/ui/ErrorState.jsx";
 
 export const CartSection = () => {
   const [cartItems, setCartItems] = useState([]);
   const [promotions, setPromotions] = useState([]);
   const [region, setRegion] = useState("taiwan");
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   // ==========================================
   // allow mock fallback? =>>
@@ -43,6 +47,7 @@ export const CartSection = () => {
 
     async function loadData() {
       setIsLoading(true);
+      setLoadError(null);
       try {
         // signal: 讓 API 請求可以被中斷
         const [cartResponse, promoResponse] = await Promise.all([
@@ -62,6 +67,7 @@ export const CartSection = () => {
           console.error("[CartSection] API failed, fallback disabled", error);
           setCartItems([]);
           setPromotions([]);
+          setLoadError("購物車資料載入失敗，請稍後再試。");
           return;
         }
 
@@ -80,7 +86,7 @@ export const CartSection = () => {
 
     // Cleanup function：組件卸載時中斷尚未完成的 API 請求
     return () => controller.abort();
-  }, [allowMockFallback, localFallbackCart, localFallbackPromotions]);
+  }, [allowMockFallback, localFallbackCart, localFallbackPromotions, reloadKey]);
 
   // ==========================================
   //  畫面互動邏輯 (打勾、全選、算錢)
@@ -126,7 +132,7 @@ export const CartSection = () => {
           item.id === itemId ? { ...item, quantity: newQuantity } : item,
         ),
       );
-    } catch (error) {
+    } catch {
       // api fail =>> if allowMockFallback then fake success by updating quantity in UI, else alert error
       if (allowMockFallback) {
         console.warn(
@@ -153,7 +159,7 @@ export const CartSection = () => {
 
       //  success => filter
       setCartItems((prev) => prev.filter((item) => item.id !== itemId));
-    } catch (error) {
+    } catch {
       //fail => if MOCK_FALLBACK=true then fake success by removing item from UI, else alert error
       if (allowMockFallback) {
         console.warn(
@@ -170,11 +176,17 @@ export const CartSection = () => {
   //  UI Render
   // ==========================================
   if (isLoading) {
+    return <LoadingState message="正在為您準備購物車..." />;
+  }
+
+  if (loadError) {
     return (
-      <div className="max-w-5xl mx-auto px-4 mt-32 flex flex-col items-center justify-center text-gray-400">
-        <div className="w-10 h-10 border-4 border-gray-100 border-t-black rounded-full animate-spin mb-6"></div>
-        <p className="font-medium">正在為您準備購物車...</p>
-      </div>
+      <ErrorState
+        title="購物車載入失敗"
+        message={loadError}
+        actionLabel="重新載入"
+        onAction={() => setReloadKey((prev) => prev + 1)}
+      />
     );
   }
 

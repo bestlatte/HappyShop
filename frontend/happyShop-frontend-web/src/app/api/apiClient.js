@@ -89,7 +89,10 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
 function getAccessToken() {
-    return localStorage.getItem("accessToken");
+    return (
+        localStorage.getItem("happyShopAccessToken") ??
+        localStorage.getItem("accessToken")
+    );
 }
 
 function createUrl(path, query) {

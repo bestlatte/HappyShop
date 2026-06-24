@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { submitCheckout } from "../../cart/services/cartApi";
+import { createOrder } from "../../cart/services/cartApi";
 
 const INITIAL_RECIPIENT = {
   name: "",
@@ -101,7 +101,7 @@ export default function useCheckoutForm({ items = [], onSuccess } = {}) {
 
     try {
       const data = buildPayload();
-      const result = await submitCheckout({ data });
+      const result = await createOrder({ data });
       onSuccess?.(result);
       return result;
     } catch (err) {
