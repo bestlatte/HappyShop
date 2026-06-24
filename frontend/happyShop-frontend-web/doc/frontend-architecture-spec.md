@@ -1,6 +1,15 @@
-# HappyShop Web 前端架構與開發規格（Team Spec）
+# HappyShop Web 前端架構與開發規格（Team Spec / Source of Truth）
 
 > 目的：讓後續所有頁面開發都遵循同一套架構、命名、資料流與 API 封裝規則，降低維護成本與整合風險。
+
+## 0. 文件治理（必讀）
+
+- 本文件是前端規範唯一真相來源（single source of truth）。
+- `DEVELOPMENT_GUIDE.md` 僅作為新成員導引與快速索引，不定義新規則。
+- 規則衝突時，以本文件為準。
+- 建議判斷標準：
+  - MUST：必須遵守，違反需在 PR 明確說明理由。
+  - SHOULD：建議遵守，可在特定情境彈性調整。
 
 ## 1. 架構總覽
 
@@ -68,7 +77,7 @@ src/
   - `token`：存在時自動加 `Authorization: Bearer <token>`。
   - 錯誤時丟出包含 `status` 與 `payload` 的 Error。
 
-### 3.3 環境變數規範 (還沒研究好)
+### 3.3 環境變數規範
 - API base URL 統一使用 `import.meta.env.VITE_API_BASE_URL`。
 - 未設定時 fallback `/api`。
 - `.env` 建議：
@@ -85,7 +94,7 @@ VITE_API_BASE_URL=http://localhost:8080/api
 範例（概念）：
 ```js
 export async function fetchProducts({ nav, category, signal }) {
-  const payload = await apiRequest('/product', { method: 'GET', query: { nav, category }, signal });
+  const payload = await apiRequest('/products', { method: 'GET', query: { nav, category }, signal });
   const items = Array.isArray(payload) ? payload : (payload.items ?? []);
   return items.map(normalizeProduct);
 }
