@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { CartProvider } from "./contexts/CartContext";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
+import RequireAuth from "./routes/RequireAuth.jsx";
 
 import RootLayout from "../layouts/RootLayout";
 import HomePage from "../features/product/pages/HomePage.jsx";
@@ -36,7 +37,14 @@ export default function App() {
               <Route path="/forget-password" element={<ForgetPasswordPage />} />
 
               {/* 4. 購物與結帳 (RootLayout 會自動偵測 /cart 並調整樣式) */}
-              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route
+                path="/checkout"
+                element={
+                  <RequireAuth>
+                    <CheckoutPage />
+                  </RequireAuth>
+                }
+              />
               <Route path="/cart" element={<CartPage />} />
 
               {/* 5. 商品詳細頁 */}

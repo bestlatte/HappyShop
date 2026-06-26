@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { fetchLogin } from "../services/loginApi.js";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../app/contexts/AuthContext.jsx";
 
 export function useLoginForm() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { login } = useAuth();
 
     const [email, setEmail] = useState("");
@@ -38,7 +39,12 @@ export function useLoginForm() {
 
             console.log("登入成功：", result);
             alert("登入成功");
-            navigate("/");
+            const from = location.state?.from;
+            const redirectTo = from
+                ? `${from.pathname}${from.search ?? ""}${from.hash ?? ""}`
+                : "/";
+
+            navigate(redirectTo, { replace: true });
         } catch (error) {
             console.error("登入失敗", error);
             alert("登入失敗，請稍後再試")

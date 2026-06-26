@@ -67,6 +67,7 @@ export async function createOrder({ data, signal } = {}) {
     method: "post",
     body: data,
     signal,
+    withAuth: true,
   });
 
   return payload;
