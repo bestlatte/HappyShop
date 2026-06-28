@@ -1,11 +1,13 @@
-export default function ShippingMethodSelector() {
+export default function ShippingMethodSelector({ value, onChange }) {
     return (
         <div className="flex items-center justify-between">
             <label className="flex cursor-pointer items-center gap-3">
                 <input
                     type="radio"
                     name="shippingMethod"
-                    defaultChecked
+                    value="blackCat"
+                    checked={value === "blackCat"}
+                    onChange={(e) => onChange(e.target.value)}
                     className="h-[18px] w-[18px] accent-black"
                 />
                 <span className="text-[18px] text-black">黑貓</span>

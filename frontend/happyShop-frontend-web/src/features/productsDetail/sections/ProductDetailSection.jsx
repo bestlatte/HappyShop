@@ -5,6 +5,8 @@ import { ProductInfo } from "../components/ProductInfo";
 import { fetchProductDetail, postCartItem } from "../services/productApi";
 import { useCart } from "../../../app/contexts/useCart";
 import { mockProductsData } from "../../../mockDatas/mockProductsData.js";
+import LoadingState from "../../../components/ui/LoadingState.jsx";
+import ErrorState from "../../../components/ui/ErrorState.jsx";
 
 export const ProductDetailSection = ({ productId = "p1" }) => {
   // state：商品詳細資料
@@ -145,18 +147,16 @@ export const ProductDetailSection = ({ productId = "p1" }) => {
 
   //UI
   if (isLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center text-gray-500">
-        正在為您尋找商品...
-      </div>
-    );
+    return <LoadingState message="正在為您尋找商品..." className="mt-0 h-screen" />;
   }
 
   if (!product) {
     return (
-      <div className="h-screen flex items-center justify-center text-red-500">
-        找不到此商品，請回上一頁
-      </div>
+      <ErrorState
+        title="找不到此商品"
+        message="請返回上一頁重新選擇商品。"
+        className="mt-0 h-screen flex flex-col items-center justify-center"
+      />
     );
   }
 

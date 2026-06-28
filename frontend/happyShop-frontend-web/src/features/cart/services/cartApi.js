@@ -1,6 +1,6 @@
 // src/features/cart/services/cartApi.js
 
-import { apiRequest } from "../../../app/api/apiClient";
+import { apiRequest } from "../../../app/api/apiClient.js";
 
 // Data Normalization
 function normalizeCartItem(raw = {}) {
@@ -40,11 +40,11 @@ export async function fetchCartPromotions({ signal } = {}) {
 
 // 更新購物車項目數量 U (+, -)
 export async function updateCartItemQuantity({
-  itemId,
+  cartItemId,
   quantity,
   signal,
 } = {}) {
-  const payload = await apiRequest(`/cart/items/${itemId}`, {
+  const payload = await apiRequest(`/cart/items/${cartItemId}`, {
     method: "put",
     body: { quantity },
     signal,
@@ -53,21 +53,27 @@ export async function updateCartItemQuantity({
   return payload;
 }
 // 刪除購物車項目 D
-export async function deleteCartItem({ itemId, signal } = {}) {
-  const payload = await apiRequest(`/cart/items/${itemId}`, {
+export async function deleteCartItem({ cartItemId, signal } = {}) {
+  const payload = await apiRequest(`/cart/items/${cartItemId}`, {
     method: "delete",
     signal,
   });
 
   return payload;
 }
-// 提交結帳 C
-export async function submitCheckout({ data, signal } = {}) {
-  const payload = await apiRequest("/cart/checkout", {
+// 建立訂單 C
+export async function createOrder({ data, signal } = {}) {
+  const payload = await apiRequest("/orders", {
     method: "post",
     body: data,
     signal,
+    withAuth: true,
   });
 
   return payload;
+}
+
+// backward compatible alias
+export async function submitCheckout({ data, signal } = {}) {
+  return createOrder({ data, signal });
 }

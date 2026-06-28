@@ -99,7 +99,7 @@ export default function ProductSection({ nav , categoryKey, title = "新品上�
             <div className="mt-12">
                 <button
                     type="button"
-                    // onClick={()=>navigate(`/productBrowser?category=${categoryKey}`)}
+                    // onClick={()=>navigate(`/product-browser?category=${categoryKey}`)}
                     onClick={() => navigate(`/product-browser?nav=${nav}&category=${categoryKey}`)}
                     className="cursor-pointer rounded-xl border border-black-300 px-3 py-3 text-base font-extrabold text-gray-900 hover:bg-gray-50"
                 >

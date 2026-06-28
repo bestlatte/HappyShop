@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { fetchLogin } from "../services/loginApi.js";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../app/contexts/AuthContext.jsx";
 
 export function useLoginForm() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { login } = useAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -29,10 +32,19 @@ export function useLoginForm() {
                 password,
             });
 
+            const loginResult = login({ payload: result, email: trimmedEmail });
+            if (!loginResult.ok) {
+                throw new Error("登入成功但缺少 access token");
+            }
 
             console.log("登入成功：", result);
             alert("登入成功");
-            navigate("/home");
+            const from = location.state?.from;
+            const redirectTo = from
+                ? `${from.pathname}${from.search ?? ""}${from.hash ?? ""}`
+                : "/";
+
+            navigate(redirectTo, { replace: true });
         } catch (error) {
             console.error("登入失敗", error);
             alert("登入失敗，請稍後再試")

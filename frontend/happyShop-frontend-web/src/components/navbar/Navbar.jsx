@@ -42,6 +42,7 @@ function AuthMenu({
                       accountOpen,
                       setAccountOpen,
                       navigate,
+                      onLogout,
                   }) {
     return (
         <div className="relative" ref={accountRef}>
@@ -103,7 +104,8 @@ function AuthMenu({
                             className="block w-full px-4 py-2.5 text-left text-[14px] font-medium text-gray-900 hover:bg-gray-50 cursor-pointer"
                             onClick={() => {
                                 setAccountOpen(false);
-                                console.log("logout");
+                                onLogout?.();
+                                navigate("/");
                             }}
                         >
                             登出
@@ -122,6 +124,7 @@ export default function Navbar({
                                    brandSub = "B2C buy",
                                    onHamburgerClick,
                                    onNavClick,
+                                   onLogout,
                                }) {
     const {
         accountOpen,
@@ -174,6 +177,7 @@ export default function Navbar({
             accountOpen={accountOpen}
             setAccountOpen={setAccountOpen}
             navigate={navigate}
+            onLogout={onLogout}
         />
     ) : (
         <GuestMenu navigate={navigate} />

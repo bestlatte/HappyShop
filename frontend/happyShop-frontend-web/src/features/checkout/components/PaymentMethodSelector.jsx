@@ -1,7 +1,12 @@
-import { useState } from "react";
-
-export default function PaymentMethodSelector() {
-    const [paymentMethod, setPaymentMethod] = useState("creditCard");
+export default function PaymentMethodSelector({
+    paymentMethod,
+    onPaymentMethodChange,
+    creditCard,
+    onCreditCardChange,
+}) {
+    const handleCardChange = (field) => (e) => {
+        onCreditCardChange(field, e.target.value);
+    };
 
     return (
         <div>
@@ -13,7 +18,7 @@ export default function PaymentMethodSelector() {
                             name="paymentMethod"
                             value="creditCard"
                             checked={paymentMethod === "creditCard"}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
+                            onChange={(e) => onPaymentMethodChange(e.target.value)}
                             className="h-[18px] w-[18px] accent-black"
                         />
                         <span className="text-[18px] text-black">信用卡</span>
@@ -27,7 +32,7 @@ export default function PaymentMethodSelector() {
                             name="paymentMethod"
                             value="linePay"
                             checked={paymentMethod === "linePay"}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
+                            onChange={(e) => onPaymentMethodChange(e.target.value)}
                             className="h-[18px] w-[18px] accent-black"
                         />
                         <span className="text-[18px] text-black">LINE Pay</span>
@@ -41,7 +46,7 @@ export default function PaymentMethodSelector() {
                             name="paymentMethod"
                             value="jkoPay"
                             checked={paymentMethod === "jkoPay"}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
+                            onChange={(e) => onPaymentMethodChange(e.target.value)}
                             className="h-[18px] w-[18px] accent-black"
                         />
                         <span className="text-[18px] text-black">街口支付</span>
@@ -67,6 +72,8 @@ export default function PaymentMethodSelector() {
                                 <input
                                     type="text"
                                     placeholder="卡號"
+                                    value={creditCard.cardNumber}
+                                    onChange={handleCardChange("cardNumber")}
                                     className="w-full border-none bg-transparent p-0 text-[16px] text-black placeholder:text-[#b3b3b3] focus:outline-none"
                                 />
                             </div>
@@ -76,6 +83,8 @@ export default function PaymentMethodSelector() {
                                     <input
                                         type="text"
                                         placeholder="有效期限 MM / YY"
+                                        value={creditCard.expiry}
+                                        onChange={handleCardChange("expiry")}
                                         className="w-full border-none bg-transparent p-0 text-[16px] text-black placeholder:text-[#b3b3b3] focus:outline-none"
                                     />
                                 </div>
@@ -84,6 +93,8 @@ export default function PaymentMethodSelector() {
                                     <input
                                         type="text"
                                         placeholder="安全碼"
+                                        value={creditCard.cvv}
+                                        onChange={handleCardChange("cvv")}
                                         className="w-full border-none bg-transparent p-0 text-[16px] text-black placeholder:text-[#b3b3b3] focus:outline-none"
                                     />
                                 </div>
@@ -93,6 +104,8 @@ export default function PaymentMethodSelector() {
                                 <input
                                     type="text"
                                     placeholder="持卡人姓名"
+                                    value={creditCard.holderName}
+                                    onChange={handleCardChange("holderName")}
                                     className="w-full border-none bg-transparent p-0 text-[16px] text-black placeholder:text-[#b3b3b3] focus:outline-none"
                                 />
                             </div>
