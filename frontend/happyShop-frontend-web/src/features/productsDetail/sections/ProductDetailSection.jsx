@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { ProductImageGallery } from "../components/ProductImageGallery";
 import { ProductInfo } from "../components/ProductInfo";
-import { fetchProductDetail, postCartItem } from "../services/productApi";
+import { fetchProductDetail } from "../services/productApi";
 import { useCart } from "../../../app/contexts/useCart";
 import { mockProductsData } from "../../../mockDatas/mockProductsData.js";
 import LoadingState from "../../../components/ui/LoadingState.jsx";
@@ -91,9 +91,6 @@ export const ProductDetailSection = ({ productId = "p1" }) => {
 
   //onAddToCart
   const handleAddToCart = async (payload) => {
-    //NOTE:DEL
-    console.log(payload);
-    // 防呆
     const isSingleSpec =
       product.variants.sizes?.length === 0 &&
       product.variants.subSpecs?.length === 0;
@@ -102,12 +99,12 @@ export const ProductDetailSection = ({ productId = "p1" }) => {
       alert("請先選擇商品規格！");
       return;
     }
+
     const cartItem = {
       productId: payload.productId,
       size: payload.size || "",
       subSpec: payload.subSpec || "",
       quantity: payload.quantity,
-      // 如果沒規格，就存 "單一規格"
       spec:
         payload.size || payload.subSpec
           ? `${payload.size} - ${payload.subSpec}`
@@ -120,34 +117,21 @@ export const ProductDetailSection = ({ productId = "p1" }) => {
     };
 
     try {
-      // call real API
-      await postCartItem(cartItem);
-
-      // if success, update UI (Context)
-      addToCart(cartItem);
-
+      await addToCart(cartItem);
       alert(
         `成功加入購物車！\n商品：${product.name}\n數量：${payload.quantity} 件`,
       );
     } catch (error) {
-      //fail but allow mock fallback?
-      if (allowMockFallback) {
-        console.warn("[ProductDetail] API failed，but allow mock fallback！");
-
-        // allow mock fallback =>> call mock addToCart and update UI (Context)
-        addToCart(cartItem);
-        alert("[alllow mock fallback] 已加入購物車！");
-      } else {
-        // not allow mock fallback =>> show error message
-        console.error("加入購物車發生錯誤：", error);
-        alert("加入購物車失敗，請稍後再試！");
-      }
+      console.error("加入購物車發生錯誤：", error);
+      alert("加入購物車失敗，請稍後再試！");
     }
   };
 
   //UI
   if (isLoading) {
-    return <LoadingState message="正在為您尋找商品..." className="mt-0 h-screen" />;
+    return (
+      <LoadingState message="正在為您尋找商品..." className="mt-0 h-screen" />
+    );
   }
 
   if (!product) {

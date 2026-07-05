@@ -5,15 +5,15 @@ export const CartItemRow = ({ item, onToggle, onQuantityChange, onDelete }) => {
     <div className="flex flex-col py-6 border-b border-gray-100 last:border-0 md:flex-row md:items-center">
       <div className="flex md:contents">
         <div className="flex items-center justify-start pr-3 shrink-0 md:w-12 md:justify-center md:pr-0">
+          {/* NOTE:refactor in next version */}
           <input
             type="checkbox"
-            checked={item.selected}
+            checked={item.selected ?? false}
             onChange={onToggle}
-            className="w-5 h-5 accent-black cursor-pointer"
           />
         </div>
 
-        <div className="w-19 shrink-0 bg-gray-100 rounded-lg overflow-hidden aspect-[3/4] md:w-24">
+        <div className="w-19 shrink-0 bg-gray-100 rounded-lg overflow-hidden aspect-3/4 md:w-24">
           <img
             src={item.imageUrl}
             alt={item.name}

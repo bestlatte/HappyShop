@@ -1,3 +1,4 @@
+//Provider + Context 物件
 import {
   createContext,
   useState,
@@ -22,8 +23,13 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem("happyShopCart");
-    return savedCart ? JSON.parse(savedCart) : [];
+    try {
+      const savedCart = localStorage.getItem("happyShopCart");
+      const parsed = savedCart ? JSON.parse(savedCart) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
   });
   const [promotions, setPromotions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -105,37 +111,55 @@ export const CartProvider = ({ children }) => {
   const addToCart = useCallback(
     async (newItem) => {
       const previousItems = cartItemsRef.current;
+      const normalizedItem = { selected: false, ...newItem };
 
       // 先樂觀更新
       setCartItems((prevItems) => {
         const existingIndex = prevItems.findIndex(
           (item) =>
-            item.productId === newItem.productId && item.spec === newItem.spec,
+            item.productId === normalizedItem.productId &&
+            item.spec === normalizedItem.spec,
         );
         if (existingIndex !== -1) {
           return prevItems.map((item, index) =>
             index === existingIndex
-              ? { ...item, quantity: item.quantity + newItem.quantity }
+              ? { ...item, quantity: item.quantity + normalizedItem.quantity }
               : item,
           );
         }
-        return [...prevItems, newItem];
+        return [...prevItems, normalizedItem];
       });
 
       // 打 API
       try {
-        await postCartItem(newItem);
+        const payLoad = await postCartItem(normalizedItem);
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
+            item.productId === normalizedItem.productId &&
+            item.spec === normalizedItem.spec
+              ? { ...item, id: payLoad.cartItemId }
+              : item,
+          ),
+        );
       } catch (error) {
         if (allowMockFallback) {
           console.warn(
             "[CartContext] addToCart failed, using mock fallback",
             error,
           );
+          setCartItems((prevItems) =>
+            prevItems.map((item) =>
+              item.productId === normalizedItem.productId &&
+              item.spec === normalizedItem.spec
+                ? { ...item, id: `mock-${Date.now()}` }
+                : item,
+            ),
+          );
           return;
         }
         console.error("[CartContext] addToCart failed, rolling back", error);
         setCartItems(previousItems);
-        throw error; // 讓商品頁可以接到錯誤並顯示提示
+        throw error;
       }
     },
     [allowMockFallback],

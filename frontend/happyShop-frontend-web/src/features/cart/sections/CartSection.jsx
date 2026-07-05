@@ -104,8 +104,8 @@ export const CartSection = () => {
                 key={item.id}
                 item={item}
                 onToggle={() => toggleItem(item.id)}
-                onQuantityChange={(cartItemId, currentQuantity, change) =>
-                  updateQuantity(cartItemId, currentQuantity + change)
+                onQuantityChange={(itemId, currentQuantity, change) =>
+                  updateQuantity(itemId, currentQuantity + change)
                 }
                 onDelete={() => removeFromCart(item.id)}
               />

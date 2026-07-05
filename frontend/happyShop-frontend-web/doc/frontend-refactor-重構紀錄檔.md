@@ -1,35 +1,40 @@
 # HappyShop 前端 1~5 重構紀錄檔（含關聯圖與實作範例）
 
-> 本文件整理近期完成的 1~5 點改善，包含：  
-> 1) 統一路由命名  
-> 2) 拆分 service 重複邏輯  
-> 3) 補齊 auth/session 全域狀態  
-> 4) 建立共用 loading/error 元件  
-> 5) 新增 `.env.example`
+> 本文件整理近期完成的 1~5 點改善，包含：
+>
+> 1. 統一路由命名
+> 2. 拆分 service 重複邏輯
+> 3. 補齊 auth/session 全域狀態
+> 4. 建立共用 loading/error 元件
+> 5. 新增 `.env.example`
 
 ## 版本紀錄
 
-| 版本 | 日期 | 主要內容 |
-| --- | --- | --- |
-| v1 | 2026-06-25 | 完成 1~5 點改善：路由命名統一、service 去重、auth/session 全域化、共用 loading/error 元件、`.env.example` 建立。 |
-| v2 | 2026-06-25 | 追加修正：API client 單檔化（統一 `apiClient.js`）、endpoint 命名收斂（`/products`、`/auth/login`、`/members`、`/auth/forgot-password`、`/orders`）。 |
-| v3 | 2026-06-26 | 追加修正：訪客可使用購物車、`/checkout` 需登入、登入後導回原頁、建立訂單 API 帶 Bearer token、未登入結帳提示動畫。 |
+| 版本 | 日期       | 主要內容                                                                                                                                              |
+| ---- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1   | 2026-06-25 | 完成 1~5 點改善：路由命名統一、service 去重、auth/session 全域化、共用 loading/error 元件、`.env.example` 建立。                                      |
+| v2   | 2026-06-25 | 追加修正：API client 單檔化（統一 `apiClient.js`）、endpoint 命名收斂（`/products`、`/auth/login`、`/members`、`/auth/forgot-password`、`/orders`）。 |
+| v3   | 2026-06-26 | 追加修正：訪客可使用購物車、`/checkout` 需登入、登入後導回原頁、建立訂單 API 帶 Bearer token、未登入結帳提示動畫。                                    |
+| v4   | 2026-06-29 | 追加重構：購物車狀態抽離為共用 `CartContext`，結帳頁共用購物車資料與清空流程，並將購物車 API 參數統一為 `cartItemId`。                                |
 
 ---
 
 ## 1) 統一路由路徑命名：`/productBrowser` -> `/product-browser`
 
 ### 改動目的
+
 - 統一路由風格為 kebab-case，避免 camelCase/kebab-case 混用。
 - 保留舊路徑相容，避免既有連結失效。
 
 ### 修改檔案
+
 - `src/app/App.jsx`
 - `src/layouts/RootLayout.jsx`
 - `src/features/product/sections/ProductSection.jsx`
 - `src/features/productBrowser/utils/productBrowserNav.js`（原本已是 `/product-browser`，此改動與其對齊）
 
 ### 關聯架構圖
+
 ```mermaid
 flowchart LR
   appRouter["App Router"] -->|"route /product-browser"| productBrowserPage["ProductBrowserPage"]
@@ -40,6 +45,7 @@ flowchart LR
 ```
 
 ### 實作範例（Before -> After）
+
 ```jsx
 // Before (概念)：只有新版或舊版其中一個，容易造成舊連結失效
 // <Route path="/product-browser" ... />
@@ -63,15 +69,18 @@ navigate(url);
 ## 2) 拆分 service 重複邏輯：避免 `productApi` 與 `categoryApi` 重複
 
 ### 改動目的
+
 - 商品清單 API 呼叫與 normalize 原先重複散落在兩份 service。
 - 集中後，後端欄位變更只需改一處。
 
 ### 修改檔案
+
 - `src/features/product/services/productCatalogApi.js`（新增，共用核心）
 - `src/features/product/services/productApi.js`（改為薄封裝）
 - `src/features/productBrowser/services/categoryApi.js`（改為薄封裝）
 
 ### 關聯架構圖
+
 ```mermaid
 flowchart LR
   productSection["ProductSection"] --> productApi["productApi.fetchProductsData"]
@@ -83,6 +92,7 @@ flowchart LR
 ```
 
 ### 實作範例（Before -> After）
+
 ```js
 // Before (兩份檔案都各自有 normalizeProduct + apiRequest + payload.items)
 // product/services/productApi.js
@@ -118,10 +128,12 @@ export async function fetchProductsCategory({ nav, category, signal } = {}) {
 ## 3) 補齊 auth/session 層：由 layout 常數改為全域狀態
 
 ### 改動目的
+
 - 原先 `RootLayout` 內硬編碼 `user`，無法代表真實登入狀態。
 - 改為 `AuthContext` 統一管理 token/user，讓 Navbar、登入流程、登出流程一致。
 
 ### 修改檔案
+
 - `src/app/contexts/AuthContext.jsx`（新增）
 - `src/features/auth/utils/authStorage.js`（補齊存取）
 - `src/app/App.jsx`（包 `AuthProvider`）
@@ -132,6 +144,7 @@ export async function fetchProductsCategory({ nav, category, signal } = {}) {
 - `.env.example`（補 dev mock auth 旗標）
 
 ### 關聯架構圖
+
 ```mermaid
 flowchart LR
   loginForm["useLoginForm"] -->|"fetchLogin"| loginApi["auth service"]
@@ -144,6 +157,7 @@ flowchart LR
 ```
 
 ### 實作範例（Before -> After）
+
 ```jsx
 // Before: RootLayout 內暫時常數
 const user = {
@@ -179,16 +193,19 @@ export function clearSession() { ... }
 ## 4) 建立錯誤與 loading 共用元件
 
 ### 改動目的
+
 - 避免每個頁面重複寫 spinner/error 區塊，造成 UI 不一致。
 - 讓可重試行為（例如購物車載入失敗）有統一樣式與呼叫方式。
 
 ### 修改檔案
+
 - `src/components/ui/LoadingState.jsx`（新增）
 - `src/components/ui/ErrorState.jsx`（新增）
 - `src/features/cart/sections/CartSection.jsx`（套用）
 - `src/features/productsDetail/sections/ProductDetailSection.jsx`（套用）
 
 ### 關聯架構圖
+
 ```mermaid
 flowchart LR
   loadingUi["LoadingState UI"] --> cartSection["CartSection"]
@@ -199,6 +216,7 @@ flowchart LR
 ```
 
 ### 實作範例（Before -> After）
+
 ```jsx
 // Before: 各頁各寫一組 loading div / error div
 // <div className="...">正在為您準備購物車...</div>
@@ -223,7 +241,9 @@ if (loadError) {
 ```jsx
 // ProductDetailSection (After)
 if (isLoading) {
-  return <LoadingState message="正在為您尋找商品..." className="mt-0 h-screen" />;
+  return (
+    <LoadingState message="正在為您尋找商品..." className="mt-0 h-screen" />
+  );
 }
 if (!product) {
   return (
@@ -241,14 +261,17 @@ if (!product) {
 ## 5) 新增 `.env.example`：加速新成員啟動
 
 ### 改動目的
+
 - 明確列出前端啟動必備環境變數，降低 onboarding 成本。
 - 將 API base URL、mock fallback、mock auth 都文件化。
 
 ### 修改檔案
+
 - `.env.example`
 - `src/app/contexts/AuthContext.jsx`（讀取 mock auth 旗標）
 
 ### 關聯架構圖
+
 ```mermaid
 flowchart LR
   envExample[".env.example"] --> viteEnv["import.meta.env"]
@@ -259,6 +282,7 @@ flowchart LR
 ```
 
 ### 實作範例（實際內容）
+
 ```properties
 VITE_API_BASE_URL=http://localhost:8080/api
 VITE_ENABLE_API_MOCK_FALLBACK=true
@@ -282,16 +306,19 @@ VITE_DEV_MOCK_USER_EMAIL=demo@happyshop.dev
 ### 6.1 API Client 統一為單檔
 
 #### 調整內容
+
 - 移除重複檔：`src/app/api/apiClient.jsx`
 - 全專案統一改用：`src/app/api/apiClient.js`
 
 #### 修改檔案
+
 - `src/app/api/apiClient.jsx`（刪除）
 - `src/features/cart/services/cartApi.js`
 - `src/features/productsDetail/services/productApi.js`
 - `doc/frontend-architecture-spec.md`（同步規範）
 
 #### 關聯架構圖
+
 ```mermaid
 flowchart LR
   cartApi["cartApi.js"] --> apiClient["apiClient.js"]
@@ -301,6 +328,7 @@ flowchart LR
 ```
 
 #### 實作範例
+
 ```js
 // Before
 import { apiRequest } from "../../../app/api/apiClient";
@@ -312,6 +340,7 @@ import { apiRequest } from "../../../app/api/apiClient.js";
 ### 6.2 API 路徑命名收斂（legacy -> REST）
 
 #### 調整內容
+
 - `/product` -> `/products`
 - `/login` -> `/auth/login`
 - `/register` -> `/members`
@@ -319,6 +348,7 @@ import { apiRequest } from "../../../app/api/apiClient.js";
 - `/cart/checkout` -> `/orders`（並保留前端函式別名相容）
 
 #### 修改檔案
+
 - `src/features/product/services/productCatalogApi.js`
 - `src/features/auth/services/loginApi.js`
 - `src/features/auth/services/registerApi.js`
@@ -328,6 +358,7 @@ import { apiRequest } from "../../../app/api/apiClient.js";
 - `doc/frontend-architecture-spec.md`
 
 #### 關聯架構圖
+
 ```mermaid
 flowchart LR
   productCatalogApi["fetchProductCatalog"] -->|"GET /products"| backendProducts["Product API"]
@@ -339,6 +370,7 @@ flowchart LR
 ```
 
 #### 實作範例
+
 ```js
 // src/features/auth/services/loginApi.js
 // Before: "/login"
@@ -368,6 +400,7 @@ export async function submitCheckout({ data, signal } = {}) {
 ## 6.3 訪客購物車與結帳登入保護
 
 ### 調整目標
+
 - 未登入使用者仍可瀏覽 `/cart`，並可使用 localStorage 購物車。
 - 真正需要會員身分的流程集中在 `/checkout` 與 `/orders`。
 - 未登入者進入 `/checkout` 時，先顯示「您尚未登入」提示動畫，再導到 `/login`。
@@ -375,12 +408,14 @@ export async function submitCheckout({ data, signal } = {}) {
 - 建立訂單時，前端會帶上 `Authorization: Bearer <token>`，後端仍需驗證 token。
 
 ### 修改檔案
+
 - `src/app/routes/RequireAuth.jsx`（新增）
 - `src/app/App.jsx`
 - `src/features/auth/hooks/useLoginForm.js`
 - `src/features/cart/services/cartApi.js`
 
 ### 關聯架構圖
+
 ```mermaid
 flowchart LR
   cartRoute["/cart"] -->|"訪客可進入"| cartPage["CartPage"]
@@ -394,6 +429,7 @@ flowchart LR
 ```
 
 ### 實作範例
+
 ```jsx
 // src/app/App.jsx
 <Route
@@ -446,12 +482,14 @@ export async function createOrder({ data, signal } = {}) {
 ```
 
 ### 安全性說明
+
 - 前端 `RequireAuth` 是 UX 層保護，目的是避免未登入者直接看到結帳頁。
 - 真正安全性仍由後端負責，`POST /orders` 必須驗證 Bearer token。
 - 後端應在沒有 token、token 無效或過期時回傳 `401`，權限不足時回傳 `403`。
 - 前端購物車資料仍存在 `happyShopCart`，登入與否不會清掉購物車內容。
 
 ### 測試提醒
+
 如果 `.env.local` 設定：
 
 ```properties
@@ -469,4 +507,56 @@ VITE_ENABLE_DEV_MOCK_AUTH=false
 ```text
 happyShopAccessToken
 happyShopUser
+```
+
+---
+
+## 7) 購物車狀態抽離與 checkout 共用流程
+
+### 改動目的
+
+- 將購物車狀態從各頁面分散邏輯，集中到共用的 `CartContext`。
+- 讓購物車頁與結帳頁都共用同一份 cart state、計算邏輯與清空流程。
+- 將購物車 API 的識別參數統一為 `cartItemId`，避免前端把 item id 傳錯造成請求路徑錯誤。
+- 在後端 API 尚未完全接上時，保留 mock fallback 與 localStorage 的可用性。
+
+### 修改檔案
+
+- `src/app/contexts/CartContext.jsx`
+- `src/app/contexts/useCart.js`
+- `src/features/cart/sections/CartSection.jsx`
+- `src/features/cart/services/cartApi.js`
+- `src/features/cart/data/cartMockData.js`
+- `src/features/checkout/sections/CheckoutMainSection.jsx`
+
+### 關聯架構圖
+
+```mermaid
+flowchart LR
+  cartSection["CartSection"] --> useCart["useCart()"]
+  useCart --> cartCtx["CartContext"]
+  cartCtx --> cartApi["cartApi"]
+  cartCtx --> mockData["cartMockData"]
+  checkoutSection["CheckoutMainSection"] --> useCart
+  checkoutSection -->|"clearCart + navigate /orders"| orderFlow["結帳流程"]
+```
+
+### 實作範例（Before -> After）
+
+```jsx
+// Before: 購物車狀態散落在各個頁面與元件中
+const [cartItems, setCartItems] = useState([]);
+
+// After: 由 CartContext 統一管理
+const { cartItems, updateQuantity, removeFromCart, clearCart } = useCart();
+```
+
+```js
+// Before: 更新/刪除 API 參數名稱不一致
+updateCartItemQuantity({ itemId, quantity });
+deleteCartItem({ itemId });
+
+// After: 統一使用 cartItemId
+updateCartItemQuantity({ cartItemId, quantity });
+deleteCartItem({ cartItemId });
 ```
